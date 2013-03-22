@@ -1,0 +1,334 @@
+<html>
+	<head>
+		<title>Live Tube Train Positions</title>
+		<link href="css/bootstrap.css" rel="stylesheet" media="screen"/>
+		<link href="css/tube.css" rel="stylesheet" media="screen"/>
+		<script type="text/javascript" src="js/raphael.js"></script>
+		<script type="text/javascript" src="/lib/js/jquery/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<script type="text/javascript" src="/lib/DIFFUSION/diffusion.js"></script>
+
+		<script type="text/javascript" src="js/tube.js"></script>
+		<script type="text/javascript" src="js/waterloo.js"></script>
+		<script type="text/javascript" src="js/piccadilly.js"></script>
+		<script type="text/javascript" src="js/victoria.js"></script>
+		<script type="text/javascript" src="js/metropolitan.js"></script>
+		<script type="text/javascript" src="js/northern.js"></script>
+		<script type="text/javascript" src="js/central.js"></script>
+		<script type="text/javascript" src="js/jubilee.js"></script>
+		<script type="text/javascript">
+			function onConnect(connected) {
+			};
+
+			function onData(msg) {
+			};
+
+			function onTrainData(msg) {
+				var t = parseTrain(msg);
+				if(msg.isInitialTopicLoad()) {
+					trains[t.id] = t;
+				}
+				else {
+					trains[t.id] = merge(trains[t.id], t); 
+				}
+
+				t = trains[t.id];
+
+				// Arrived, remove this train.
+				if(t.dest === t.from === t.to) {
+					if(t.elem !== undefined) {
+						t.elem.remove();
+						trains[t.id] = undefined;
+						return;
+					}
+				}
+
+				if(lines[current_line].stations[t.from] && lines[current_line].stations[t.to]) {
+
+					var stnFrom = lines[current_line].stations[t.from];
+					var stnTo = lines[current_line].stations[t.to];
+
+					if(t.from === t.to) {
+						if(t.elem !== undefined) {
+							// Train has reach a station
+							if(t.elem.status().length > 0) {
+								// Still travelling, quickly move it to destination.
+								t.elem.stop();
+								t.elem.animate({cx: stnTo.x, cy: stnTo.y}, 5000, 'linear', function() {
+									t.elem.remove();
+									t.elem = undefined;
+									park(t, stnTo);
+								});
+							}
+							else {
+								t.elem.remove();
+								t.elem.stop();
+								t.elem = undefined;
+								park(t, stnTo);
+							}
+						}
+						else {
+							park(t, stnTo);
+						}
+					}
+					else {
+						if(t.timeFrom >= 0 && t.timeTo >= 0) {
+							var position = t.timeFrom / (t.timeFrom + t.timeTo);
+							var dx = (stnTo.x - stnFrom.x) * position;
+							var dy = (stnTo.y - stnFrom.y) * position;
+
+							var cx = Math.floor(stnFrom.x + dx);
+							var cy = Math.floor(stnFrom.y + dy);
+
+							if(t.elem === undefined) {
+								t.elem = paper.circle(cx, cy, 5);
+								t.elem.node.id = t.id;
+							}
+
+							if(t.elem.status().length === 0) {
+								// Train starts moving
+								t.elem.attr(global_attrs.moving);
+								t.elem.animate({cx: stnTo.x, cy: stnTo.y}, t.timeTo * 1000, 'linear');
+							}
+							else {
+								// Received new timeTo, update speed as appropriate
+								t.elem.stop();
+								t.elem.animate({cx: stnTo.x, cy: stnTo.y}, t.timeTo * 1000, 'linear');
+							}
+						}
+					}
+
+				}
+
+			};
+
+			function park(train, station) {
+				train.elem = paper.circle(station.x, station.y, 5);
+				train.elem.attr(global_attrs.stationary);
+				train.elem.node.id = train.id;
+				train.elem.stop();
+			};
+
+			function parseTrain(msg) {
+				var f = msg.getFields(0);
+				var t = {
+					id : f[0],
+					dest : f[1],
+					from : f[2],
+					to : f[3],
+					timeFrom : f[4] != '' ? parseInt(f[4]) : '',
+					timeTo : f[5] != '' ? parseInt(f[5]) : ''
+				};
+				if(t.id === '') {
+					var idx = msg.getTopic().lastIndexOf('/');
+					t.id = msg.getTopic().substring(idx+1);
+				}
+				return t;
+			};
+
+			function merge(train, update) {
+				if(train === undefined) {
+					// Got information about a train, but we have no record of it.
+					return;
+				}
+				if(update.dest !== '') { train.dest = update.dest; }
+				if(update.from !== '') { train.from = update.from; }
+				if(update.to !== '') { train.to = update.to; }
+				if(update.timeFrom !== '') { train.timeFrom = parseInt(update.timeFrom); }
+				if(update.timeTo !== '') { train.timeTo = parseInt(update.timeTo); }
+				return train;
+			};
+
+
+			function init() {
+				DiffusionClient.addTopicListener('tube/line/./.*', onTrainData);
+
+				DiffusionClient.connect({
+						topic : 'tube/line/' + current_line + '/train/',
+						onCallbackFunction : onConnect,
+						onDataFunction : onData
+				});
+
+				$(document).on('click', 'circle', function(e) {
+					var t = trains[this.id];
+					if(t) {
+						// Would be nice to have a panel to show this information.
+						alert('Train ID: ' + t.id + '\nFrom: ' + t.from + '\nTo: ' + t.to + '\nTime from last station: ' + t.timeFrom + '\nTime to next station: ' + t.timeTo);
+						//alert(t.id + ':' + t.from + '->' + t.to + ' ' + t.timeFrom + '/' + t.timeTo);
+					}
+				});
+				$(document).on('click', '#btnZoomIn', function(e) {
+					setZoom(0.8);
+				});
+				$(document).on('click', '#btnZoomOut', function(e) {
+					setZoom(1.2);
+				});
+				$(document).on('mousedown', '#canvas', function(e) {
+					mouseDown = { x: e.clientX, y: e.clientY };
+				});
+				$(document).on('mouseup', '#canvas', function(e) {
+					mouseDown = undefined;
+					coords.x = offset.x;
+					coords.y = offset.y;
+				});
+				$(document).on('mousemove', '#canvas', function(e) {
+					if(mouseDown) {
+						offset.x = coords.x + (mouseDown.x - e.clientX);
+						offset.y = coords.y + (mouseDown.y - e.clientY);
+						paper.setViewBox(offset.x, offset.y, coords.w, coords.h, true);
+					}
+				});
+				$('.line_enabled').click(function(e) {
+					change_line(this.id.substring(5));
+				});
+				$('#canvas').css('cursor', 'move');
+				$('circle').css('cursor', 'pointer');
+
+				var canvas = document.getElementById('canvas');
+				paper = Raphael(canvas, canvas.width, canvas.height);
+				coords.w = paper.width;
+				coords.h = paper.height;
+				draw_line();
+			};
+
+			function draw_line() {
+				draw_path(global_attrs.line_outline);
+				draw_stations(global_attrs['station_' + current_line]);
+				draw_path(global_attrs['line_' + current_line]);
+				draw_labels();
+			};
+			function draw_stations(attrs) {
+				for(var i in lines[current_line].stations) {
+					var stn = lines[current_line].stations[i];
+					paper.circle(stn.x, stn.y, 12).attr(attrs);
+				}
+			};
+			function draw_path(attrs) {
+				for(var i in lines[current_line].stations) {
+					var stn = lines[current_line].stations[i];
+					for(j in stn.routes) {
+						var dst = lines[current_line].stations[stn.routes[j]];
+						paper.path('M' + stn.x + ',' + stn.y + 'L' + dst.x + ',' + dst.y).attr(global_attrs.line_default).attr(attrs);
+					}
+				}
+			};
+			function draw_labels() {
+				for(var i in lines[current_line].stations) {
+					var stn = lines[current_line].stations[i];
+					paper.text(stn.x, stn.y - 20, stn.name);
+				}
+			};
+
+			function setZoom(level) {
+				coords.zoom = coords.zoom * level;
+				coords.w = paper.width * coords.zoom;
+				coords.h = paper.height * coords.zoom;
+				paper.setViewBox(coords.x, coords.y, coords.w, coords.h, false);
+			};
+
+			function change_line(name) {
+				$('.line_div').removeClass('active');
+				$('.line_' + name).addClass('active');
+
+				DiffusionClient.unsubscribe('tube/line//');
+				for(var i in trains) {
+					if(trains[i].elem !== undefined) {
+						trains[i].elem.stop();
+						trains[i].elem.remove();
+						trains[i].elem = undefined;
+					}
+				}
+				trains = {};
+				if(name === 'jubilee') {
+					current_line = 'J';
+				}
+				if(name === 'central') {
+					current_line = 'C';
+				}
+				if(name === 'waterloo_and_city') {
+					current_line = 'W';
+				}
+				if(name === 'piccadilly') {
+					current_line = 'P';
+				}
+				if(name === 'victoria') {
+					current_line = 'V';
+				}
+				if(name === 'metropolitan') {
+					current_line = 'M';
+				}
+				if(name === 'northern') {
+					current_line = 'N';
+				}
+
+				DiffusionClient.subscribe('tube/line/' + current_line + '/train/');
+
+				paper.clear();
+				coords.x = 0;
+				coords.y = 0;
+				coords.w = paper.width;
+				coords.h = paper.height;
+				coords.zoom = 1;
+				paper.setViewBox(coords.x, coords.y, coords.w, coords.h, true);
+				draw_line();
+			};
+
+		</script>
+	</head>
+	<body onload="init()">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<div class="brand">Live tube train locations</div>
+					<div class="navbar-text pull-right"><img src="img/logo.png"/></div>
+				</div>
+			</div>
+		</div>
+			<div>&nbsp;</div>
+			<div>&nbsp;</div>
+			<div>&nbsp;</div>
+
+		<div class="container-fluid">
+
+			<div class="row-fluid">
+
+				<div class="span3">
+					<div class="well sidebar-nav">
+						<ul class="nav nav-list">
+							<li class="nav-header">Lines</li>
+							<li class="line_div line_disabled line_bakerloo" id="line_bakerloo">Bakerloo</li>
+							<li class="active line_div line_enabled line_central" id="line_central">Central</li>
+							<li class="line_div line_disabled line_circle" id="line_circle">Circle</li>
+							<li class="line_div line_disabled line_district" id="line_district">District</li>
+							<li class="line_div line_disabled line_hammersmith_and_city" id="line_hammersmith_and_city">H'smith &amp; City</li>
+							<li class="line_div line_enabled line_jubilee" id="line_jubilee">Jubilee</li>
+							<li class="line_div line_enabled line_metropolitan" id="line_metropolitan">Metropolitan</li>
+							<li class="line_div line_enabled line_northern" id="line_northern">Northern</li>
+							<li class="line_div line_enabled line_piccadilly" id="line_piccadilly">Piccadilly</li>
+							<li class="line_div line_enabled line_victoria" id="line_victoria">Victoria</li>
+							<li class="line_div line_enabled line_waterloo_and_city" id="line_waterloo_and_city">Waterloo &amp; City</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="span3">
+					<div class="container-fluid" width="640">
+						<div id="canvas" style="background: #f7f7f7; border: solid 1px black; width: 640; height: 480; position:relative; top:0px; left: 0px">
+							<div style="position: absolute; left: 4px; top:4px">
+								<div><button id="btnZoomIn" style="width: 2em">+</button></div>
+								<div><button id="btnZoomOut" style="width: 2em">-</button></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="span3">
+					<div class="container-fluid">
+						<div>Details...</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

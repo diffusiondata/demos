@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<publishers>
+
+	<publisher name="Tube">
+		<class>com.pushtechnology.diffusion.demos.tube.TubePublisher</class>
+		<enabled>true</enabled>
+		<start>true</start>
+		<launch name="Tube" category="demo">
+			<description>Tube train locations</description>
+			<url>http://www.pushtechnology.com</url>
+		</launch>
+	</publisher>
+	
+</publishers>

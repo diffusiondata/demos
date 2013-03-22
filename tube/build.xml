@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TubePublisher" default="deploy">
+
+	<property name="publisher.name" value="TubePublisher" />
+        <property name="diffusion.jar" value="/home/adam/Apps/Diffusion/Diffusion4.5.0_01/lib/diffusion.jar" />
+	<property name="jar.name" value="${publisher.name}.jar" />
+	<property name="dar.name" value="${publisher.name}.dar" />
+	<property name="diffusion.deploy.service" value="http://localhost:8080/deploy" />
+
+	<target name="-init">
+                <mkdir dir="bin"/>
+	</target>
+
+	<target name="compile" depends="-init">
+                <javac srcdir="src"
+                        destdir="bin"
+                        classpath="${diffusion.jar}"/>
+	</target>
+
+	<target name="makejar" depends="compile">
+		<jar jarfile="${jar.name}" includes="**/*.class" basedir="bin" />
+	</target>
+
+	<target name="makedeployable" depends="makejar">
+		<delete dir="deploy" />
+		<mkdir dir="deploy/${publisher.name}" />
+		<copy todir="deploy/${publisher.name}">
+			<fileset dir=".">
+				<include name="data/**" />
+				<include name="etc/**" />
+				<include name="ext/**" />
+				<include name="html/**" />
+			</fileset>
+		</copy>
+		<copy todir="deploy/${publisher.name}/ext" file="${jar.name}" />
+		<jar jarfile="${dar.name}" includes="${publisher.name}/**" basedir="deploy" manifest="META-INF/MANIFEST.MF" />
+	</target>
+
+	<target name="deploy" depends="makedeployable">
+		<mkdir dir="deploy" />
+		<exec executable="curl">
+			<arg value="-X" />
+			<arg value="POST" />
+			<arg value="${diffusion.deploy.service}" />
+			<arg value="--data-binary" />
+			<arg value="@${dar.name}" />
+		</exec>
+	</target>
+
+        <target name="clean">
+                <delete dir="deploy" />
+                <delete dir="bin" />
+                <delete file="${jar.name}" />
+                <delete file="${dar.name}" />
+        </target>
+</project>
