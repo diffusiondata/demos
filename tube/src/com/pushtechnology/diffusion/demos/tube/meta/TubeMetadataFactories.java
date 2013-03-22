@@ -1,3 +1,4 @@
+/* COPYRIGHT (c) 2013 Push Technology Ltd. */
 package com.pushtechnology.diffusion.demos.tube.meta;
 
 import com.pushtechnology.diffusion.api.APIException;

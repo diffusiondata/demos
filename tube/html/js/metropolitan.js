@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['M'] = { name: 'Metropolitan' };
 lines['M'].stations = {
     AME : {name: 'Amersham', x: 100, y: 200, routes:['CLF']},

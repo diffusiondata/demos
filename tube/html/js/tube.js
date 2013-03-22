@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 var paper;
 var mouseDown = undefined;
 var coords = { x: 0, y: 0, w: 0, h: 0, zoom: 1 };

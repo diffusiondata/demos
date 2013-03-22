@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['J'] = { name: 'Jubilee' };
 lines['J'].stations = {
     STA : {name: 'Stanmore', x: 100, y: 100, routes:['CPK']},

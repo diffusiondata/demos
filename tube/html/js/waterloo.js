@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['W'] = { name: 'Waterloo & City' };
 lines['W'].stations = {
     WLO : {name: 'Waterloo', x: 200, y: 100, routes: ['BNK']},

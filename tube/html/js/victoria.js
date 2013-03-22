@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['V'] = { name: 'Victoria' };
 lines['V'].stations = {
     WAL : {name: 'Walthamstow Central', x: 1600, y: 100, routes:['BHR']},

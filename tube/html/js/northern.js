@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['N'] = { name: 'Northern' };
 lines['N'].stations = {
     MOR : {name: 'Morden', x: 100, y: 200, routes:['SWM']},

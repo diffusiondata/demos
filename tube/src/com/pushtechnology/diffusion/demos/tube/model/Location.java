@@ -1,3 +1,4 @@
+/* COPYRIGHT (c) 2013 Push Technology Ltd. */
 package com.pushtechnology.diffusion.demos.tube.model;
 
 import java.text.ParseException;

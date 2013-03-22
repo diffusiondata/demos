@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['C'] = { name: 'Central' };
 lines['C'].stations = {
     WRP : {name: 'West Ruislip', x: 100, y: 100, routes: ['RUG']},

@@ -1,3 +1,5 @@
+// COPYRIGHT (c) 2013 Push Technology Ltd.
+
 lines['P'] = { name: 'Piccadilly' };
 lines['P'].stations = {
     UXB : {name: 'Uxbridge', x: 100, y: 100, routes:['HDN']},
