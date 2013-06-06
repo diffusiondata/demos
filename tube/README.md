@@ -25,7 +25,7 @@ Building and installing
 2. Edit build.xml and change the property `diffusion.jar` to point at
 the diffusion.jar on your system.
 
-3. `ant makedeploy` creates a DAR file for hot deployment.
+3. `ant makedeployable` creates a DAR file for hot deployment.
 
 4. `ant deploy` deploys to a running instance of Diffusion.
 
