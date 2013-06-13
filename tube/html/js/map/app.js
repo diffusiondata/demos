@@ -1,3 +1,5 @@
+var lines = {};
+
 var lat = 51.5171;
 var lon = -0.1062;
 var zoom = 11;
@@ -38,6 +40,7 @@ function initMap() {
 }
 
 function initDiffusion() {
+    DiffusionClient.addTopicListener('^tube/line/.$', onLine);
     DiffusionClient.addTopicListener('^tube/line/./stations$', onStations);
 
     DiffusionClient.connect({
@@ -47,15 +50,32 @@ function initDiffusion() {
 }
 
 function onConnect(connected) {
-    DiffusionClient.fetch('tube/line/C/stations');
+    // Get list of lines
+    DiffusionClient.fetch('tube/line/.');
 }
 
 function onData(msg) {
     console.log('Got data', msg);
 }
 
+function onLine(msg) {
+    console.log('Got line', msg);
+    var fields = msg.getRecords()[0];
+    var id = fields.getField(0);
+
+    lines[id] = {
+        'name' : fields.getField(1),
+        'color' : fields.getField(2)
+    };
+
+    DiffusionClient.fetch('tube/line/' + id + '/stations');
+}
+
 function onStations(msg) {
     console.log('Draw stations', msg);
+
+    var lineId = msg.getTopic().split('/')[2];
+    var line = lines[lineId];
 
     var stations = {};
     for(var i in msg.getRecords()) {
@@ -97,8 +117,8 @@ function onStations(msg) {
                     var end = new OpenLayers.Geometry.Point(station['lon'], station['lat']).transform(projection, map.getProjectionObject());
 
                     var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([start, end]),
-                                                                {'name': 'Central Line'},
-                                                                {'stroke': true, 'strokeColor': '#ff0000', 'strokeWidth': 4});
+                                                                {'name': line['name']},
+                                                                {'stroke': true, 'strokeColor': line['color'], 'strokeWidth': 4});
                     layerLines.addFeatures(feature);
                 }
             }
