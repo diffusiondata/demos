@@ -2,7 +2,7 @@
 <project name="TubePublisher" default="deploy">
 
 	<property name="publisher.name" value="TubePublisher" />
-        <property name="diffusion.jar" value="/opt/Diffusion/Diffusion4.5.0_01/lib/diffusion.jar" />
+        <property name="diffusion.jar" value="/home/adam/Apps/Diffusion/Diffusion4.5.3_01/lib/diffusion.jar" />
 	<property name="jar.name" value="${publisher.name}.jar" />
 	<property name="dar.name" value="${publisher.name}.dar" />
 	<property name="diffusion.deploy.service" value="http://localhost:8080/deploy" />

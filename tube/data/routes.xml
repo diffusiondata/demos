@@ -70,12 +70,12 @@
       <next>OXC</next>
     </station>
     <station id="OXC">
-      <prev>MDS</prev>
+      <prev>BDS</prev>
       <next>TCR</next>
     </station>
     <station id="TCR">
       <prev>OXC</prev>
-      <next>HOLK</next>
+      <next>HOL</next>
     </station>
     <station id="HOL">
       <prev>TCR</prev>
