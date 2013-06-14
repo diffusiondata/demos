@@ -1,4 +1,6 @@
 var lines = {};
+var trains = {};
+var stations = {};
 var defaultLine = 'C';
 var initialising = true;
 
@@ -41,6 +43,7 @@ function initMap() {
 function initDiffusion() {
     DiffusionClient.addTopicListener('^tube/line/.$', onLine);
     DiffusionClient.addTopicListener('^tube/line/./stations$', onStations);
+    DiffusionClient.addTopicListener('^tube/line/./train/.*$', onTrain);
 
     DiffusionClient.connect({
         onCallbackFunction : onConnect,
@@ -50,14 +53,16 @@ function initDiffusion() {
 
 function onLayerChanged(event) {
     console.log('layer changed: ', event);
-    xyzzy = event;
+
     if(event.layer.options['type'] !== undefined && event.layer.options['type'] == 'line') {
         if(event.property === 'visibility') {
             if(event.layer.getVisibility() === true) {
                 console.log('Subscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
+                DiffusionClient.subscribe('tube/line/' + event.layer.options['lineId'] + '/train/');
             }
             else {
                 console.log('Unsubscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
+                DiffusionClient.unsubscribe('tube/line/' + event.layer.options['lineId'] + '/train/');
             }
         }
     }
@@ -91,7 +96,6 @@ function onStations(msg) {
     var lineId = msg.getTopic().split('/')[2];
     var line = lines[lineId];
 
-    var stations = {};
     for(var i in msg.getRecords()) {
         var fields = msg.getRecord(i);
 
@@ -167,3 +171,34 @@ function onStations(msg) {
 
 }
 
+function onTrain(msg) {
+    console.log('onTrain()', msg);
+    xyzzy = msg;
+
+    var path = msg.getTopic().split('/');
+    var lineId = path[2];
+    var trainId = path[4];
+
+    var fields = msg.getRecord(0).getFields();
+    var dest = fields[1];
+    var from = fields[2];
+    var to = fields[3];
+    var timeFrom = fields[4];
+    var timeTo = fields[5];
+
+    if(trains[trainId] === undefined) {
+        trains[trainId] = {};
+    }
+
+    mergeField(trains[trainId], 'dest', dest);
+    mergeField(trains[trainId], 'from', from);
+    mergeField(trains[trainId], 'to', to);
+    mergeField(trains[trainId], 'timeFrom', timeFrom);
+    mergeField(trains[trainId], 'timeTo', timeTo);
+}
+
+function mergeField(collection, key, value) {
+    if(value !== '') {
+        collection[key] = value;
+    }
+}
