@@ -1,4 +1,6 @@
 var lines = {};
+var defaultLine = 'C';
+var initialising = true;
 
 var lat = 51.5171;
 var lon = -0.1062;
@@ -22,12 +24,15 @@ function initMap() {
         numZoomLevels : 19,
         units : 'm',
         projection : new OpenLayers.Projection('EPSG:900913'),
-        displayProjection : projection
+        displayProjection : projection,
+        eventListeners : {
+            'changelayer' : onLayerChanged
+        }
     });
 
-    layerMapnik = new OpenLayers.Layer.OSM.Mapnik('Mapnik');
-    layerMapnik.opacity = 0.6;
-    map.addLayer(layerMapnik);
+    layerMap = new OpenLayers.Layer.OSM.Mapnik('Map');
+    layerMap.opacity = 0.6;
+    map.addLayer(layerMap);
 
     var lonLat = new OpenLayers.LonLat(lon, lat).transform(projection, map.getProjectionObject());
     map.setCenter(lonLat, zoom);
@@ -41,6 +46,21 @@ function initDiffusion() {
         onCallbackFunction : onConnect,
         onDataFunction : onData
     });
+}
+
+function onLayerChanged(event) {
+    console.log('layer changed: ', event);
+    xyzzy = event;
+    if(event.layer.options['type'] !== undefined && event.layer.options['type'] == 'line') {
+        if(event.property === 'visibility') {
+            if(event.layer.getVisibility() === true) {
+                console.log('Subscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
+            }
+            else {
+                console.log('Unsubscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
+            }
+        }
+    }
 }
 
 function onConnect(connected) {
@@ -98,19 +118,22 @@ function onStations(msg) {
         var lonlat = new OpenLayers.LonLat(station['lon'], station['lat']).transform(projection, map.getProjectionObject());
 
         if(layerLines[lineId] === undefined) {
-            layerLines[lineId] = new OpenLayers.Layer.Vector(line.name);
+            layerLines[lineId] = new OpenLayers.Layer.Vector(line.name,
+                                                             {
+                                                                 'visibility' : false,
+                                                                 'type'       : 'line',
+                                                                 'lineId'     : lineId
+                                                             });
             map.addLayer(layerLines[lineId]);
         }
+        if(initialising === true) {
+            if(lineId === defaultLine) {
+                layerLines[lineId].setVisibility(true);
+            }
+            initialising = false;
+        }
 
-        layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
-                                                                      {},
-                                                                      {
-                                                                          externalGraphic: 'img/station.png',
-                                                                          graphicWidth: 20,
-                                                                          graphicHeight: 20
-                                                                      }
-                                                                     )]);
-
+        // Draw lines between stations
         var prev = station['prev'];
         if(prev !== undefined && prev !== null) {
 
@@ -129,6 +152,17 @@ function onStations(msg) {
                 }
             }
         }
+
+        // Draw station
+        layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
+                                                                      {},
+                                                                      {
+                                                                          'externalGraphic' : 'img/station.png',
+                                                                          'graphicWidth'    : 20,
+                                                                          'graphicHeight'   : 20
+                                                                      }
+                                                                     )]);
+
     }
 
 }
