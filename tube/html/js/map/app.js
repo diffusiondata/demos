@@ -27,6 +27,7 @@ function initMap() {
     });
 
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik('Mapnik');
+	layerMapnik.opacity = 0.6;
     map.addLayer(layerMapnik);
 
     layerStations = new OpenLayers.Layer.Markers('Stations');
