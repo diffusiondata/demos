@@ -469,7 +469,7 @@
       <lon>-0.211003174222271470</lon>
     </coords>
   </station>
-  <station code="" name="Eastcote" active="false">
+  <station code="ETE" name="Eastcote" active="false">
     <description>Eastcote Station, London Underground Ltd., Field End Rd, Ruislip, Middx, HA5 1QZ</description>
     <coords>
       <lat>51.576493044501650000</lat>

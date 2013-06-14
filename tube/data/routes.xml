@@ -820,14 +820,14 @@
 </station>
 <station id="RCP">
         <prev>STB</prev>
-        <next>HMD</next>
+        <next>HMS</next>
 </station>
-<station id="HMD">
+<station id="HMS">
         <prev>RCP</prev>
         <next>BCT</next>
 </station>
 <station id="BCT">
-        <prev>HMD</prev>
+        <prev>HMS</prev>
         <next>WKN</next>
 </station>
 <station id="WKN">
