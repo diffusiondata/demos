@@ -119,7 +119,7 @@
       <lon>-0.213606857361082370</lon>
     </coords>
   </station>
-  <station code="" name="Bayswater" active="false">
+  <station code="BAY" name="Bayswater" active="false">
     <description>Bayswater Station, London Underground Ltd., Queensway, London, W2 4QH</description>
     <coords>
       <lat>51.512233058741060000</lat>

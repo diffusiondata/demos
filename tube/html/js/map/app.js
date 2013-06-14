@@ -4,8 +4,7 @@ var lat = 51.5171;
 var lon = -0.1062;
 var zoom = 11;
 var map;
-var layerStations;
-var layerLines;
+var layerLines = {};
 var projection = new OpenLayers.Projection('EPSG:4326');
 
 function init() {
@@ -27,14 +26,8 @@ function initMap() {
     });
 
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik('Mapnik');
-	layerMapnik.opacity = 0.6;
+    layerMapnik.opacity = 0.6;
     map.addLayer(layerMapnik);
-
-    layerStations = new OpenLayers.Layer.Markers('Stations');
-    map.addLayer(layerStations);
-
-    layerLines = new OpenLayers.Layer.Vector('Lines');
-    map.addLayer(layerLines);
 
     var lonLat = new OpenLayers.LonLat(lon, lat).transform(projection, map.getProjectionObject());
     map.setCenter(lonLat, zoom);
@@ -56,11 +49,11 @@ function onConnect(connected) {
 }
 
 function onData(msg) {
-    console.log('Got data', msg);
+//    console.log('Got data', msg);
 }
 
 function onLine(msg) {
-    console.log('Got line', msg);
+//    console.log('Got line', msg);
     var fields = msg.getRecords()[0];
     var id = fields.getField(0);
 
@@ -73,7 +66,7 @@ function onLine(msg) {
 }
 
 function onStations(msg) {
-    console.log('Draw stations', msg);
+//    console.log('Draw stations', msg);
 
     var lineId = msg.getTopic().split('/')[2];
     var line = lines[lineId];
@@ -94,17 +87,29 @@ function onStations(msg) {
         stations[station['id']] = station;
     }
 
-    var icon = new OpenLayers.Icon('img/station.png',
-                                   new OpenLayers.Size(20,20),
-                                   new OpenLayers.Pixel(-10,-10));
+    // var icon = new OpenLayers.Icon('img/station.png',
+    //                                new OpenLayers.Size(20,20),
+    //                                new OpenLayers.Pixel(-10,-10));
 
+    // Draw line and stations
     for(var i in stations) {
         var station = stations[i];
 
         var lonlat = new OpenLayers.LonLat(station['lon'], station['lat']).transform(projection, map.getProjectionObject());
-        var marker = new OpenLayers.Marker(lonlat, icon.clone());
 
-        layerStations.addMarker(marker);
+        if(layerLines[lineId] === undefined) {
+            layerLines[lineId] = new OpenLayers.Layer.Vector(line.name);
+            map.addLayer(layerLines[lineId]);
+        }
+
+        layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
+                                                                      {},
+                                                                      {
+                                                                          externalGraphic: 'img/station.png',
+                                                                          graphicWidth: 20,
+                                                                          graphicHeight: 20
+                                                                      }
+                                                                     )]);
 
         var prev = station['prev'];
         if(prev !== undefined && prev !== null) {
@@ -120,7 +125,7 @@ function onStations(msg) {
                     var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([start, end]),
                                                                 {'name': line['name']},
                                                                 {'stroke': true, 'strokeColor': line['color'], 'strokeWidth': 4});
-                    layerLines.addFeatures(feature);
+                    layerLines[lineId].addFeatures(feature);
                 }
             }
         }
