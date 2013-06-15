@@ -1,3 +1,5 @@
+var xyzzy = [];
+
 var lines = {};
 var trains = {};
 var stations = {};
@@ -96,6 +98,7 @@ function onStations(msg) {
     var lineId = msg.getTopic().split('/')[2];
     var line = lines[lineId];
 
+    var stationsOnLine = [];
     for(var i in msg.getRecords()) {
         var fields = msg.getRecord(i);
 
@@ -109,6 +112,7 @@ function onStations(msg) {
         station['next'] = fields.getField(6);
 
         stations[station['id']] = station;
+	stationsOnLine.push(station);
     }
 
     // var icon = new OpenLayers.Icon('img/station.png',
@@ -116,8 +120,8 @@ function onStations(msg) {
     //                                new OpenLayers.Pixel(-10,-10));
 
     // Draw line and stations
-    for(var i in stations) {
-        var station = stations[i];
+    for(var i in stationsOnLine) {
+        var station = stationsOnLine[i];
 
         var lonlat = new OpenLayers.LonLat(station['lon'], station['lat']).transform(projection, map.getProjectionObject());
 
@@ -172,8 +176,7 @@ function onStations(msg) {
 }
 
 function onTrain(msg) {
-    console.log('onTrain()', msg);
-    xyzzy = msg;
+//    console.log('onTrain()', msg);
 
     var path = msg.getTopic().split('/');
     var lineId = path[2];
