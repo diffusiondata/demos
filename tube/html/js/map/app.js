@@ -81,38 +81,27 @@ function onData(msg) {
 
 function onLine(msg) {
 //    console.log('Got line', msg);
-    var fields = msg.getRecords()[0];
-    var id = fields.getField(0);
 
-    lines[id] = {
-        'name' : fields.getField(1),
-        'color' : fields.getField(2)
-    };
+    var line = new Line(msg.getRecord(0));
+    lines[line.id] = line;
 
-    DiffusionClient.fetch('tube/line/' + id + '/stations');
+    DiffusionClient.fetch('tube/line/' + line.id + '/stations');
 }
 
 function onStations(msg) {
-//    console.log('Draw stations', msg);
+    console.log('Draw stations', msg);
 
     var lineId = msg.getTopic().split('/')[2];
     var line = lines[lineId];
 
-    var stationsOnLine = [];
+    if(line === undefined || line === null) {
+        return; // Don't know anything about this line
+    }
+
     for(var i in msg.getRecords()) {
-        var fields = msg.getRecord(i);
-
-        var station = {};
-        station['id'] = fields.getField(0);
-        station['name'] = fields.getField(1);
-        station['addr'] = fields.getField(2);
-        station['lat'] = fields.getField(3);
-        station['lon'] = fields.getField(4);
-        station['prev'] = fields.getField(5);
-        station['next'] = fields.getField(6);
-
-        stations[station['id']] = station;
-	stationsOnLine.push(station);
+        console.log('i=' + i + ' : ', msg.getRecord(i));
+        var stn = new Station(msg.getRecord(i), lineId);
+        line.stations[stn.id] = stn;
     }
 
     // var icon = new OpenLayers.Icon('img/station.png',
@@ -120,10 +109,10 @@ function onStations(msg) {
     //                                new OpenLayers.Pixel(-10,-10));
 
     // Draw line and stations
-    for(var i in stationsOnLine) {
-        var station = stationsOnLine[i];
+    for(var i in line.stations) {
+        var station = line.stations[i];
 
-        var lonlat = new OpenLayers.LonLat(station['lon'], station['lat']).transform(projection, map.getProjectionObject());
+        var lonlat = new OpenLayers.LonLat(station.lon, station.lat).transform(projection, map.getProjectionObject());
 
         if(layerLines[lineId] === undefined) {
             layerLines[lineId] = new OpenLayers.Layer.Vector(line.name,
@@ -142,16 +131,16 @@ function onStations(msg) {
         }
 
         // Draw lines between stations
-        var prev = station['prev'];
+        var prev = station.prevStn;
         if(prev !== undefined && prev !== null) {
 
             var prevArr = prev.split(',');
             
             for(var p in prevArr) {
-                var prevStn = stations[prevArr[p]];
+                var prevStn = line.stations[prevArr[p]];
                 if(prevStn !== undefined && prevStn !== null) {
-                    var start = new OpenLayers.Geometry.Point(prevStn['lon'], prevStn['lat']).transform(projection, map.getProjectionObject());
-                    var end = new OpenLayers.Geometry.Point(station['lon'], station['lat']).transform(projection, map.getProjectionObject());
+                    var start = new OpenLayers.Geometry.Point(prevStn.lon, prevStn.lat).transform(projection, map.getProjectionObject());
+                    var end = new OpenLayers.Geometry.Point(station.lon, station.lat).transform(projection, map.getProjectionObject());
 
                     var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([start, end]),
                                                                 {'name': line['name']},
@@ -182,26 +171,6 @@ function onTrain(msg) {
     var lineId = path[2];
     var trainId = path[4];
 
-    var fields = msg.getRecord(0).getFields();
-    var dest = fields[1];
-    var from = fields[2];
-    var to = fields[3];
-    var timeFrom = fields[4];
-    var timeTo = fields[5];
-
-    if(trains[trainId] === undefined) {
-        trains[trainId] = {};
-    }
-
-    mergeField(trains[trainId], 'dest', dest);
-    mergeField(trains[trainId], 'from', from);
-    mergeField(trains[trainId], 'to', to);
-    mergeField(trains[trainId], 'timeFrom', timeFrom);
-    mergeField(trains[trainId], 'timeTo', timeTo);
-}
-
-function mergeField(collection, key, value) {
-    if(value !== '') {
-        collection[key] = value;
-    }
+    var train = new Train(msg.getRecord(0));
+    trains[trainId] = train;
 }
