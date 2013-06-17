@@ -89,7 +89,7 @@ function onLine(msg) {
 }
 
 function onStations(msg) {
-    console.log('Draw stations', msg);
+//    console.log('Draw stations', msg);
 
     var lineId = msg.getTopic().split('/')[2];
     var line = lines[lineId];
@@ -143,8 +143,8 @@ function onStations(msg) {
                     var end = new OpenLayers.Geometry.Point(station.lon, station.lat).transform(projection, map.getProjectionObject());
 
                     var feature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString([start, end]),
-                                                                {'name': line['name']},
-                                                                {'stroke': true, 'strokeColor': line['color'], 'strokeWidth': 4});
+                                                                {'name': line.name},
+                                                                {'stroke': true, 'strokeColor': line.color, 'strokeWidth': 4});
                     layerLines[lineId].addFeatures(feature);
                 }
             }
@@ -154,9 +154,9 @@ function onStations(msg) {
         layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
                                                                       {},
                                                                       {
-                                                                          'externalGraphic' : 'img/station.png',
+                                                                          'externalGraphic' : 'img/tube_sign_small.png',
                                                                           'graphicWidth'    : 20,
-                                                                          'graphicHeight'   : 20
+                                                                          'graphicHeight'   : 16
                                                                       }
                                                                      )]);
 
