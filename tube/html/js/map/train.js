@@ -1,4 +1,4 @@
-Train = function(record) {
+Train = function(record, existing) {
     var id;
     var destStn;
     var fromStn;
@@ -6,12 +6,20 @@ Train = function(record) {
     var timeFromLastStn;
     var timeToNextStn;
 
+    if(existing !== undefined) {
+        this.id = existing.id;
+        this.destStn = existing.destStn;
+        this.toStn = existing.toStn;
+        this.timeFromLastStn = existing.timeFromLastStn;
+        this.timeToNextStn = existing.timeToNextStn;
+    }
+
     if(record !== undefined) {
         this.parseRecord(record);
     }
 };
 
-Train.prototype.parseRecord = function(record) {
+Train.prototype.parseRecord = function(record, existing) {
     var fields = record.getFields();
 
     if(fields[0] !== '') {

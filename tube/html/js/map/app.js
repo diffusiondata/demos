@@ -99,7 +99,6 @@ function onStations(msg) {
     }
 
     for(var i in msg.getRecords()) {
-        console.log('i=' + i + ' : ', msg.getRecord(i));
         var stn = new Station(msg.getRecord(i), lineId);
         line.stations[stn.id] = stn;
     }
@@ -150,6 +149,8 @@ function onStations(msg) {
             }
         }
 
+
+
         // Draw station
         layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
                                                                       {},
@@ -171,6 +172,36 @@ function onTrain(msg) {
     var lineId = path[2];
     var trainId = path[4];
 
-    var train = new Train(msg.getRecord(0));
+    var train = new Train(msg.getRecord(0), trains[trainId]);
+
     trains[trainId] = train;
+
+    var stnFrom = lines[lineId].stations[train.fromStn];
+    var stnTo = lines[lineId].stations[train.toStn];
+
+    console.log('Train ' + train.id + ' (' + train.featureId + ') is between ' + stnFrom.id + ' and ' + stnTo.id);
+
+    var ptFrom = new OpenLayers.Geometry.Point(stnFrom.lon, stnFrom.lat).transform(projection, map.getProjectionObject());
+    var ptTo = new OpenLayers.Geometry.Point(stnTo.lon, stnTo.lat).transform(projection, map.getProjectionObject());
+
+    if(train.feature === undefined) {
+        var feature = new OpenLayers.Feature.Vector(ptFrom,
+                                                    {
+                                                        id : 'train_' + trainId
+                                                    },
+                                                    {
+                                                        'externalGraphic' : 'img/train_small.png',
+                                                        'graphicWidth'    : 24,
+                                                        'graphicHeight'    : 24
+                                                    }
+                                                   );
+
+        train.feature = feature;
+        console.log('Adding new feature ' + feature.id);
+        layerLines[lineId].addFeatures([feature]);
+    }
+    else {
+        console.log('Train ' + train.id + ' already has feature ' + train.feature.id);
+    }
+
 }
