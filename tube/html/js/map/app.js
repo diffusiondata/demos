@@ -54,16 +54,16 @@ function initDiffusion() {
 }
 
 function onLayerChanged(event) {
-    console.log('layer changed: ', event);
+//    console.log('layer changed: ', event);
 
     if(event.layer.options['type'] !== undefined && event.layer.options['type'] == 'line') {
         if(event.property === 'visibility') {
             if(event.layer.getVisibility() === true) {
-                console.log('Subscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
+//                console.log('Subscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
                 DiffusionClient.subscribe('tube/line/' + event.layer.options['lineId'] + '/train/');
             }
             else {
-                console.log('Unsubscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
+//                console.log('Unsubscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
                 DiffusionClient.unsubscribe('tube/line/' + event.layer.options['lineId'] + '/train/');
             }
         }
@@ -101,6 +101,7 @@ function onStations(msg) {
     for(var i in msg.getRecords()) {
         var stn = new Station(msg.getRecord(i), lineId);
         line.stations[stn.id] = stn;
+        stations[stn.id] = stn;
     }
 
     // var icon = new OpenLayers.Icon('img/station.png',
@@ -179,7 +180,11 @@ function onTrain(msg) {
     var stnFrom = lines[lineId].stations[train.fromStn];
     var stnTo = lines[lineId].stations[train.toStn];
 
-    console.log('Train ' + train.id + ' (' + train.featureId + ') is between ' + stnFrom.id + ' and ' + stnTo.id);
+    if(stnFrom === undefined || stnTo === undefined) {
+        return;
+    }
+
+//    console.log('Train ' + train.id + ' is between ' + stnFrom.id + ' and ' + stnTo.id);
 
     var ptFrom = new OpenLayers.Geometry.Point(stnFrom.lon, stnFrom.lat).transform(projection, map.getProjectionObject());
     var ptTo = new OpenLayers.Geometry.Point(stnTo.lon, stnTo.lat).transform(projection, map.getProjectionObject());
@@ -197,11 +202,14 @@ function onTrain(msg) {
                                                    );
 
         train.feature = feature;
-        console.log('Adding new feature ' + feature.id);
+//        console.log('Adding new feature ' + feature.id);
         layerLines[lineId].addFeatures([feature]);
     }
     else {
-        console.log('Train ' + train.id + ' already has feature ' + train.feature.id);
+//        console.log('Train ' + train.id + ' already has feature ' + train.feature.id);
     }
 
+    layerLines[lineId].removeFeatures([train.feature]);
+    train.calculatePosition();
+    layerLines[lineId].addFeatures([train.feature]);
 }

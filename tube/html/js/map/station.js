@@ -30,10 +30,10 @@ Station.prototype.parseRecord = function(record) {
         this.addr = fields[2];
     }
     if(fields[3] !== '') {
-        this.lat = fields[3];
+        this.lat = parseFloat(fields[3]);
     }
     if(fields[4] !== '') {
-        this.lon = fields[4];
+        this.lon = parseFloat(fields[4]);
     }
     if(fields[5] !== '') {
         this.prevStn = fields[5];
