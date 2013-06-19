@@ -13,9 +13,15 @@ var map;
 var layerLines = {};
 var projection = new OpenLayers.Projection('EPSG:4326');
 
+var frameSkip = 0;
+var isMovingTrains = false;
+var updateInterval = 100;
+
 function init() {
     initMap();
     initDiffusion();
+
+    setInterval(moveTrains, updateInterval);
 }
 
 function initMap() {
@@ -56,7 +62,7 @@ function initDiffusion() {
 function onLayerChanged(event) {
 //    console.log('layer changed: ', event);
 
-    if(event.layer.options['type'] !== undefined && event.layer.options['type'] == 'line') {
+    if(event.layer.options['type'] !== undefined && event.layer.options['type'] === 'line') {
         if(event.property === 'visibility') {
             if(event.layer.getVisibility() === true) {
 //                console.log('Subscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
@@ -174,6 +180,7 @@ function onTrain(msg) {
     var trainId = path[4];
 
     var train = new Train(msg.getRecord(0), trains[trainId]);
+    train.lineId = lineId;
 
     trains[trainId] = train;
 
@@ -212,4 +219,32 @@ function onTrain(msg) {
     layerLines[lineId].removeFeatures([train.feature]);
     train.calculatePosition();
     layerLines[lineId].addFeatures([train.feature]);
+}
+
+function moveTrains() {
+//    console.log('moveTrains()');
+    if(isMovingTrains) {
+        frameSkip++;
+        return;
+    }
+    isMovingTrains = true;
+
+    var step = updateInterval / 1000;
+
+    for(var i in trains) {
+        var train = trains[i];
+        if(train.lineId === undefined || layerLines[train.lineId].getVisibility() === false) {
+            continue;
+        }
+        
+        if(train.dx !== undefined && train.dy !== undefined
+          && train.dx !== NaN && train.dy !== NaN) {
+            train.feature.geometry.move(train.dx * step * (frameSkip + 1), train.dy * step * (frameSkip + 1));
+            layerLines[train.lineId].drawFeature(train.feature);
+        }
+
+    }
+
+    frameSkip = 0;
+    isMovingTrains = false;
 }

@@ -1,5 +1,6 @@
 Train = function(record, existing) {
     var id;
+    var lineId;
     var destStn;
     var fromStn;
     var toStn;
@@ -9,6 +10,7 @@ Train = function(record, existing) {
 
     if(existing !== undefined) {
         this.id = existing.id;
+        this.lineId = existing.lineId;
         this.destStn = existing.destStn;
         this.fromStn = existing.fromStn;
         this.toStn = existing.toStn;
@@ -75,53 +77,16 @@ Train.prototype.calculatePosition = function() {
         // Between stations
         var ratio = this.timeToNextStn / (this.timeFromLastStn + this.timeToNextStn);
 
-        var dLon = ((toStn.lon - fromStn.lon) * ratio);
-        var dLat = ((toStn.lat - fromStn.lat) * ratio);
+        this.dLon = ((toStn.lon - fromStn.lon) * ratio);
+        this.dLat = ((toStn.lat - fromStn.lat) * ratio);
 
         point = new OpenLayers.Geometry.Point(
-            fromStn.lon + dLon,
-            fromStn.lat + dLat).transform(projection, map.getProjectionObject());
+            fromStn.lon + this.dLon,
+            fromStn.lat + this.dLat).transform(projection, map.getProjectionObject());
+
+        this.dx = (point.x - this.feature.geometry.x) / this.timeToNextStn;
+        this.dy = (point.y - this.feature.geometry.y) / this.timeToNextStn;
     }
 
     this.feature.geometry = point;
 };
-        
-
-/*    
-        //Total Time
-        var totalTime = new Number(this.secondsFrom + this.secondsTo);
-        if(this.secondsTo<=0 || this.secondsFrom <= 0){
-            // Don't move Train (It is in the destination Station)
-            this.dLat = new Number(0);
-            this.dLng = new Number(0);
-
-            //Print at the Station
-            this.actualLat = toStationCoords[0];
-            this.actualLng = toStationCoords[1];
-
-        }else if (this.secondsFrom <= 0){
-            // Don't move Train (It is in the departure Station)
-            this.dLat = new Number(0);
-            this.dLng = new Number(0);
-
-            //Print at the Station
-            this.actualLat = fromStationCoords[0];
-            this.actualLng = fromStationCoords[1];
-
-        }else{
-            console.log("totalTime", totalTime)
-
-            //Delta Increase
-            this.dLat = (toStationCoords[0] - fromStationCoords[0])/totalTime; //*0.5; 
-            this.dLng = (toStationCoords[1] - fromStationCoords[1])/totalTime; //*0.5;
-            console.log("Delta calculates", this.dLat,this.dLng)
-
-            //Actual position
-            console.log('this.dLat',this.dLat,'totalTime',totalTime,'secondsFrom',this.secondsFrom);
-
-            this.actualLat = fromStationCoords[0] + ((this.dLat /totalTime) * this.secondsFrom);//*0.5;
-            this.actualLng = fromStationCoords[1] + ((this.dLng /totalTime) * this.secondsFrom);//*0.5;
-            console.log("REsult: actualLat:",this.actualLat, "actualLng:",this.actualLng);
-        }
-*/
-
