@@ -17,11 +17,14 @@ var frameSkip = 0;
 var isMovingTrains = false;
 var updateInterval = 100;
 
+var popup = null;
+
 function init() {
     initMap();
     initDiffusion();
 
     setInterval(moveTrains, updateInterval);
+
 }
 
 function initMap() {
@@ -60,16 +63,12 @@ function initDiffusion() {
 }
 
 function onLayerChanged(event) {
-//    console.log('layer changed: ', event);
-
     if(event.layer.options['type'] !== undefined && event.layer.options['type'] === 'line') {
         if(event.property === 'visibility') {
             if(event.layer.getVisibility() === true) {
-//                console.log('Subscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
                 DiffusionClient.subscribe('tube/line/' + event.layer.options['lineId'] + '/train/');
             }
             else {
-//                console.log('Unsubscribe to updates for ' + event.layer.options['lineId'] + ' => ' + event.layer.name);
                 DiffusionClient.unsubscribe('tube/line/' + event.layer.options['lineId'] + '/train/');
             }
         }
@@ -82,12 +81,9 @@ function onConnect(connected) {
 }
 
 function onData(msg) {
-//    console.log('Got data', msg);
 }
 
 function onLine(msg) {
-//    console.log('Got line', msg);
-
     var line = new Line(msg.getRecord(0));
     lines[line.id] = line;
 
@@ -95,7 +91,6 @@ function onLine(msg) {
 }
 
 function onStations(msg) {
-//    console.log('Draw stations', msg);
 
     var lineId = msg.getTopic().split('/')[2];
     var line = lines[lineId];
@@ -110,10 +105,6 @@ function onStations(msg) {
         stations[stn.id] = stn;
     }
 
-    // var icon = new OpenLayers.Icon('img/station.png',
-    //                                new OpenLayers.Size(20,20),
-    //                                new OpenLayers.Pixel(-10,-10));
-
     // Draw line and stations
     for(var i in line.stations) {
         var station = line.stations[i];
@@ -125,9 +116,20 @@ function onStations(msg) {
                                                              {
                                                                  'visibility' : false,
                                                                  'type'       : 'line',
-                                                                 'lineId'     : lineId
+                                                                 'lineId'     : lineId,
+                                                                 'eventListeners' : {
+                                                                     'featureselected' : function(evt) {
+                                                                         showPopup(evt.feature);
+                                                                     },
+                                                                     'featureunselected' : function(evt) {
+                                                                         hidePopup(evt.feature);
+                                                                     }
+                                                                 }
                                                              });
+            var selector = new OpenLayers.Control.SelectFeature(layerLines[lineId], { hover: true, autoActivate: true });
+
             map.addLayer(layerLines[lineId]);
+            map.addControl(selector);
         }
         if(initialising === true) {
             if(lineId === defaultLine) {
@@ -156,11 +158,11 @@ function onStations(msg) {
             }
         }
 
-
-
         // Draw station
         layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
-                                                                      {},
+                                                                      {
+                                                                          'id' : 'stn_' + station.id
+                                                                      },
                                                                       {
                                                                           'externalGraphic' : 'img/tube_sign_small.png',
                                                                           'graphicWidth'    : 20,
@@ -172,9 +174,45 @@ function onStations(msg) {
 
 }
 
-function onTrain(msg) {
-//    console.log('onTrain()', msg);
+function showPopup(feature) {
+    if(popup !== undefined && popup !== null) {
+        map.removePopup(popup);
+        popup.destroy();
+    }
 
+    var id = feature.attributes.id;
+    if(id !== undefined && id.indexOf('stn_') === 0) {
+        var stnId = id.substring(4);
+        var stn = stations[stnId];
+        popup = new OpenLayers.Popup.FramedCloud('Station information',
+                                                 OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                                 null,
+                                                 '<div>' + stn.name + '</div>',
+                                                 null, true, null);
+        map.addPopup(popup);
+    }        
+    if(id !== undefined && id.indexOf('train_') === 0) {
+        var trainId = id.substring(6);
+        var train = trains[trainId];
+        popup = new OpenLayers.Popup.FramedCloud('Train information',
+                                                 OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+                                                 null,
+                                                 '<div>From ' + train.fromStn + ' to ' + train.toStn + '</div>',
+                                                 null, true, null);
+        map.addPopup(popup);
+    }
+}
+
+function hidePopup(feature) {
+    if(popup === undefined || popup === null) {
+        return;
+    }
+    map.removePopup(popup);
+    popup.destroy();
+    popup = null;
+}
+
+function onTrain(msg) {
     var path = msg.getTopic().split('/');
     var lineId = path[2];
     var trainId = path[4];
@@ -191,38 +229,40 @@ function onTrain(msg) {
         return;
     }
 
-//    console.log('Train ' + train.id + ' is between ' + stnFrom.id + ' and ' + stnTo.id);
-
     var ptFrom = new OpenLayers.Geometry.Point(stnFrom.lon, stnFrom.lat).transform(projection, map.getProjectionObject());
     var ptTo = new OpenLayers.Geometry.Point(stnTo.lon, stnTo.lat).transform(projection, map.getProjectionObject());
 
     if(train.feature === undefined) {
         var feature = new OpenLayers.Feature.Vector(ptFrom,
                                                     {
-                                                        id : 'train_' + trainId
+                                                        id : 'train_' + trainId,
                                                     },
                                                     {
                                                         'externalGraphic' : 'img/train_small.png',
                                                         'graphicWidth'    : 24,
-                                                        'graphicHeight'    : 24
+                                                        'graphicHeight'   : 24
                                                     }
                                                    );
+        // feature.popup = new OpenLayers.Popup.FramedCloud("Train Information",
+        //                                                  feature.geometry.getBounds().getCenterLonLat(),
+        //                                                  null,
+        //                                                  "<div>" + train.id + " from " + train.fromStn + " to " + train.toStn + "</div>",
+        //                                                  null,
+        //                                                  true);
+        
 
         train.feature = feature;
-//        console.log('Adding new feature ' + feature.id);
         layerLines[lineId].addFeatures([feature]);
-    }
-    else {
-//        console.log('Train ' + train.id + ' already has feature ' + train.feature.id);
     }
 
     layerLines[lineId].removeFeatures([train.feature]);
     train.calculatePosition();
     layerLines[lineId].addFeatures([train.feature]);
+
+
 }
 
 function moveTrains() {
-//    console.log('moveTrains()');
     if(isMovingTrains) {
         frameSkip++;
         return;
