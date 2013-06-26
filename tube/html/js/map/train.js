@@ -68,10 +68,14 @@ Train.prototype.calculatePosition = function() {
     if(this.timeFromLastStn <= 0 || this.timetoNextStn <= 0) {
         // The train in the destination station
         point = new OpenLayers.Geometry.Point(toStn.lon, toStn.lat).transform(projection, map.getProjectionObject());
+        this.dx = 0;
+        this.dy = 0;
     }
     else if(this.timeFromLastStn <= 0) {
         // The train is in the departure station
         point = new OpenLayers.Geometry.Point(fromStn.lon, fromStn.lat).transform(projection, map.getProjectionObject());
+        this.dx = 0;
+        this.dy = 0;
     }
     else {
         // Between stations
@@ -84,8 +88,8 @@ Train.prototype.calculatePosition = function() {
             fromStn.lon + this.dLon,
             fromStn.lat + this.dLat).transform(projection, map.getProjectionObject());
 
-        this.dx = (point.x - this.feature.geometry.x) / this.timeToNextStn;
-        this.dy = (point.y - this.feature.geometry.y) / this.timeToNextStn;
+        this.dx = (this.feature.geometry.x - point.x) / this.timeToNextStn;
+        this.dy = (this.feature.geometry.y - point.y) / this.timeToNextStn;
     }
 
     this.feature.geometry = point;
