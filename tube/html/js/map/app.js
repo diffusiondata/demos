@@ -218,6 +218,17 @@ function onTrain(msg) {
     var trainId = path[4];
 
     var train = new Train(msg.getRecord(0), trains[trainId]);
+
+    // This train has arrived at it's destination, we can stop
+    // tracking it now.
+    if(train.fromStn === train.toStn === train.destStn) {
+        if(trains.feature !== undefined) {
+            // TODO: Remove feature
+        }
+        trains[trainId] == undefined;
+        return;
+    }
+
     train.lineId = lineId;
 
     trains[trainId] = train;
