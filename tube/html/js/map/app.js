@@ -244,7 +244,8 @@ function onTrain(msg) {
     // tracking it now.
     if(train.fromStn === train.toStn === train.destStn) {
         if(trains.feature !== undefined) {
-            // TODO: Remove feature
+            layerLines[lineId].removeFeatures([train.feature]);
+            layerLines[lineId].destroyFeatures([train.feature]);
         }
         trains[trainId] == undefined;
         return;
