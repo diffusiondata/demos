@@ -15,7 +15,7 @@ var projection = new OpenLayers.Projection('EPSG:4326');
 
 var frameSkip = 0;
 var isMovingTrains = false;
-var updateInterval = 100;
+var updateInterval = 200;
 
 var popup = null;
 
@@ -194,10 +194,31 @@ function showPopup(feature) {
     if(id !== undefined && id.indexOf('train_') === 0) {
         var trainId = id.substring(6);
         var train = trains[trainId];
+        var stnFrom = stations[train.fromStn];
+        var stnTo = stations[train.toStn];
+
+        var desc = '<div><b>' + trainId + '</b></div>';
+        desc += '<div>From ';
+        if(stnFrom !== undefined) {
+            desc += stnFrom.name + ' (' + stnFrom.id + ')';
+        }
+        else {
+            desc += stnFrom.id;
+        }
+        desc += ' to ';
+        if(stnTo !== undefined) {
+            desc += stnTo.name + ' (' + stnTo.id + ')';
+        }
+        else {
+            desc += stnTo.id;
+        }
+        desc += '</div>';
+        desc += '<div>From last=' + train.timeFromLastStn + ', to next=' + train.timeToNextStn + '</div>';
+
         popup = new OpenLayers.Popup.FramedCloud('Train information',
                                                  OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
                                                  null,
-                                                 '<div>From ' + train.fromStn + ' to ' + train.toStn + '</div>',
+                                                 '<div>' + desc + '</div>',
                                                  null, true, null);
         map.addPopup(popup);
     }
@@ -254,13 +275,6 @@ function onTrain(msg) {
                                                         'graphicHeight'   : 24
                                                     }
                                                    );
-        // feature.popup = new OpenLayers.Popup.FramedCloud("Train Information",
-        //                                                  feature.geometry.getBounds().getCenterLonLat(),
-        //                                                  null,
-        //                                                  "<div>" + train.id + " from " + train.fromStn + " to " + train.toStn + "</div>",
-        //                                                  null,
-        //                                                  true);
-        
 
         train.feature = feature;
         layerLines[lineId].addFeatures([feature]);
