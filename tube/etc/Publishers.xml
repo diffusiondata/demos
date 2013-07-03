@@ -7,7 +7,7 @@
 		<start>true</start>
 		<launch name="Tube" category="demo">
 			<description>Tube train locations</description>
-			<url>http://www.pushtechnology.com</url>
+                        <url>/tube/map.html</url>
 		</launch>
 	</publisher>
 	
