@@ -52,7 +52,7 @@ function initMap() {
 }
 
 function initDiffusion() {
-    DiffusionClient.addTopicListener('^tube/line/.$', onLine);
+    DiffusionClient.addTopicListener('^tube/line/[CJNWVP]$', onLine);
     DiffusionClient.addTopicListener('^tube/line/./stations$', onStations);
     DiffusionClient.addTopicListener('^tube/line/./train/.*$', onTrain);
 
@@ -175,6 +175,7 @@ function onStations(msg) {
 }
 
 function showPopup(feature) {
+
     if(popup !== undefined && popup !== null) {
         map.removePopup(popup);
         popup.destroy();
@@ -203,17 +204,19 @@ function showPopup(feature) {
             desc += stnFrom.name + ' (' + stnFrom.id + ')';
         }
         else {
-            desc += stnFrom.id;
+            desc += '???';
         }
         desc += ' to ';
         if(stnTo !== undefined) {
             desc += stnTo.name + ' (' + stnTo.id + ')';
         }
         else {
-            desc += stnTo.id;
+            desc += '???';
         }
         desc += '</div>';
         desc += '<div>From last=' + train.timeFromLastStn + ', to next=' + train.timeToNextStn + '</div>';
+
+        desc += '<div>dx=' + train.dxPerSecond + ', dy=' + train.dyPerSecond + '</div>';
 
         popup = new OpenLayers.Popup.FramedCloud('Train information',
                                                  OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
@@ -284,8 +287,6 @@ function onTrain(msg) {
     layerLines[lineId].removeFeatures([train.feature]);
     train.calculatePosition();
     layerLines[lineId].addFeatures([train.feature]);
-
-
 }
 
 function moveTrains() {
@@ -295,17 +296,31 @@ function moveTrains() {
     }
     isMovingTrains = true;
 
+    var now = new Date().getTime();
     var step = updateInterval / 1000;
 
     for(var i in trains) {
         var train = trains[i];
+
+        if(train === undefined) {
+            continue;
+        }
         if(train.lineId === undefined || layerLines[train.lineId].getVisibility() === false) {
             continue;
         }
+
+        // Train is past the station it's arriving at, stop moving.
+        if(train.arrivalTime !== undefined && train.arrivalTime !== null &&
+           train.arrivalTime <= now) {
+            train.dxPerSecond = 0;
+            train.dyPerSecond = 0;
+        }
         
-        if(train.dx !== undefined && train.dy !== undefined
-          && train.dx !== NaN && train.dy !== NaN) {
-            train.feature.geometry.move(train.dx * step * (frameSkip + 1), train.dy * step * (frameSkip + 1));
+        if(train.dxPerSecond !== undefined && train.dyPerSecond !== undefined
+          && train.dxPerSecond !== NaN && train.dyPerSecond !== NaN) {
+            train.feature.geometry.move(
+                train.dxPerSecond * step * (frameSkip + 1),
+                train.dyPerSecond * step * (frameSkip + 1));
             layerLines[train.lineId].drawFeature(train.feature);
         }
 
