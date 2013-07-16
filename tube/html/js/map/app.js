@@ -159,17 +159,18 @@ function onStations(msg) {
         }
 
         // Draw station
-        layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
-                                                                      {
-                                                                          'id' : 'stn_' + station.id
-                                                                      },
-                                                                      {
-                                                                          'externalGraphic' : 'img/tube_sign_small.png',
-                                                                          'graphicWidth'    : 20,
-                                                                          'graphicHeight'   : 16
-                                                                      }
-                                                                     )]);
-
+        var stnFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
+                                                       {
+                                                           'id' : 'stn_' + station.id
+                                                       },
+                                                       {
+                                                           'externalGraphic' : 'img/tube_sign_small.png',
+                                                           'graphicWidth'    : 20,
+                                                           'graphicHeight'   : 16
+                                                       }
+                                                      );
+        station.feature = stnFeature;
+        layerLines[lineId].addFeatures([stnFeature]);
     }
 
 }
