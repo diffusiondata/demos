@@ -153,4 +153,29 @@ public class Location {
     public String toString() {
         return "Location=" + code + "," + date + "," + line + "," + from + "," + to + "," + secondsToNextStation;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) {
+            return false;
+        }
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Location)) {
+            return false;
+        }
+        Location other = (Location)obj;
+        if(this.code == other.code &&
+            this.date == other.date &&
+            this.line == other.line &&
+            this.from == other.from &&
+            this.to == other.to &&
+            this.secondsToNextStation == other.secondsToNextStation) {
+                return true;
+        }
+        return false;
+    }
+    
+    
 }

@@ -88,31 +88,10 @@ Train.prototype.calculatePosition = function() {
 
         point = new OpenLayers.Geometry.Point(lon, lat).transform(projection, map.getProjectionObject());
 
-        this.dxPerSecond = (point.x - this.feature.geometry.x) / this.timeToNextStn;
-        this.dyPerSecond = (point.y - this.feature.geometry.y) / this.timeToNextStn;
+        this.dxPerSecond = (toStn.feature.geometry.x - point.x) / this.timeToNextStn;
+        this.dyPerSecond = (toStn.feature.geometry.y - point.y) / this.timeToNextStn;
 
         this.arrivalTime = new Date().getTime() + (this.timeToNextStn * 1000);
-
-        // if(this.dxPerSecond > 100 || this.dyPerSecond < -100) {
-        //     console.log('------------------');
-        //     console.log(this.fromStn + ' -> ' + this.toStn);
-        //     console.log('' + point.x + ' - ' + this.feature.geometry.x + ' / ' + this.timeToNextStn + ' => ' + (point.x - this.feature.geometry.x) + '/' + this.timeToNextStn);
-        //     console.log('to.lon=' + toStn.lon + ', fromStn.lon=' + fromStn.lon);
-        //     console.log('timeFrom=' + this.timeFromLastStn + ', timeTo=' + this.timeToNextStn);
-        //     console.log('ratioTravelled=' + ratioTravelled);
-        // }
-
-        // var ratio = (this.timeToNextStn / (this.timeFromLastStn + this.timeToNextStn));
-
-        // this.dLon = ((toStn.lon - fromStn.lon) * ratio);
-        // this.dLat = ((toStn.lat - fromStn.lat) * ratio);
-
-        // point = new OpenLayers.Geometry.Point(
-        //     fromStn.lon + this.dLon,
-        //     fromStn.lat + this.dLat).transform(projection, map.getProjectionObject());
-
-        // this.dx = (this.feature.geometry.x - point.x) / this.timeToNextStn;
-        // this.dy = (this.feature.geometry.y - point.y) / this.timeToNextStn;
     }
 
     this.feature.geometry = point;

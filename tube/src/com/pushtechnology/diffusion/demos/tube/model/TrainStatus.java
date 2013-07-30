@@ -96,6 +96,11 @@ public class TrainStatus {
             Location history = historyIter.next();
             if(history.getTo() != location.getTo()) {
                 this.secondsFromLastStation = (int)(location.getDate().getTime() - history.getDate().getTime()) / 1000;
+                
+                // We don't need any station history before this location.
+                int idx = locationHistory.indexOf(history);
+                locationHistory.subList(0, idx).clear();
+                
                 break;
             }
         }

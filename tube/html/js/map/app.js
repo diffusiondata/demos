@@ -159,17 +159,18 @@ function onStations(msg) {
         }
 
         // Draw station
-        layerLines[lineId].addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
-                                                                      {
-                                                                          'id' : 'stn_' + station.id
-                                                                      },
-                                                                      {
-                                                                          'externalGraphic' : 'img/tube_sign_small.png',
-                                                                          'graphicWidth'    : 20,
-                                                                          'graphicHeight'   : 16
-                                                                      }
-                                                                     )]);
-
+        var stnFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat),
+                                                       {
+                                                           'id' : 'stn_' + station.id
+                                                       },
+                                                       {
+                                                           'externalGraphic' : 'img/tube_sign_small.png',
+                                                           'graphicWidth'    : 20,
+                                                           'graphicHeight'   : 16
+                                                       }
+                                                      );
+        station.feature = stnFeature;
+        layerLines[lineId].addFeatures([stnFeature]);
     }
 
 }
@@ -242,6 +243,18 @@ function onTrain(msg) {
     var trainId = path[4];
 
     var train = new Train(msg.getRecord(0), trains[trainId]);
+
+    // This train has arrived at it's destination, we can stop
+    // tracking it now.
+    if(train.fromStn === train.toStn === train.destStn) {
+        if(trains.feature !== undefined) {
+            layerLines[lineId].removeFeatures([train.feature]);
+            layerLines[lineId].destroyFeatures([train.feature]);
+        }
+        trains[trainId] == undefined;
+        return;
+    }
+
     train.lineId = lineId;
 
     trains[trainId] = train;
