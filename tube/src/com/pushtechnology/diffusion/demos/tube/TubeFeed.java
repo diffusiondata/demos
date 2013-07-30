@@ -109,8 +109,9 @@ public class TubeFeed implements Runnable {
 
                         // If the train has reached its destination, then we should remove it
                         // and the associated topic.
-                        if(location.getCode() == Location.Code.AT_PLATFORM &&
-                            status.getDestination().equals(status.getNextStation())) {
+                        if(location.getCode() == Location.Code.AT_DESTINATION ||
+                            (location.getCode() == Location.Code.AT_PLATFORM &&
+                            status.getDestination().equals(status.getNextStation()))) {
                             Logs.finest("Removing train " + trainId);
                             trainTimeMap.remove(trainId);
                             ModelHandler.INSTANCE.removeTrainStatus(trainId);
