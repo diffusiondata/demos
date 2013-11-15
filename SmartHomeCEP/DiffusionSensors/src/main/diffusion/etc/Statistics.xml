@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!-- Specifies if statistics are enabled -->
+<statistics enabled="true">
+	
+	<!-- Enable global client statistics -->
+	<client-statistics enabled="true">
+		<!-- Definition of the log in Logs.xml -->
+		<log-name>stats</log-name>
+		<!-- Specifies the output frequency of the log, this is one entry per frequency -->
+		<output-frequency>1h</output-frequency>
+		
+		<!-- Enable individual client instance statistics -->
+        <monitor-instances>false</monitor-instances>
+	</client-statistics>
+
+	<!-- Enable global topic statistics -->
+	<topic-statistics enabled="true">
+		<!-- Enable individual topic instance statistics -->
+		<monitor-instances>false</monitor-instances>
+	</topic-statistics>
+
+	<!-- Enable global Event Publisher statistics -->
+	<server-statistics enabled="true">
+		<!-- Enable individual event publisher instance statistics -->
+		<monitor-instances>false</monitor-instances>
+	</server-statistics>
+
+	<!-- Enable global publisher statistics -->
+	<publisher-statistics enabled="true">
+		<!-- Enable individual publisher instance statistics -->
+		<monitor-instances>false</monitor-instances>
+	</publisher-statistics>
+	
+	<!-- Define StatisticsReporters to distribute metrics -->
+	<reporters>
+		<!-- Distribute statistics via JMX -->
+		<reporter name="JMX" enabled="false">
+			<type>JMX</type>
+		</reporter>
+		
+		<!-- Distribute statistics via Topics -->
+		<reporter name="Topics" enabled="true">
+			<type>TOPIC</type>
+		</reporter>
+	</reporters>
+</statistics>

@@ -1,0 +1,113 @@
+h1,h2,h3,h4 {
+	text-align: center;
+	font-family: verdana, helvetica, arial, sans-serif;
+}
+
+img.centered {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+#chart {
+	position: relative;
+	left: 100px;
+	width: 800px;
+	height: 300px;
+}
+
+#y_axis {
+	position: absolute;
+	left: 60px;
+	top: 0;
+	bottom: 0;
+	width: 40px;
+}
+
+#y_axis_2 {
+	position: absolute;
+	top: 0;
+	left: 900px;
+	width: 40px;
+}
+
+#timeline {
+	position: absolute;
+	left: 100px;
+}
+
+#legend {
+	position: absolute;
+	top: 250px;
+	left: 950px;
+}
+
+.auto-mode {
+	position: absolute;
+	top: 400px;
+	left: 150px;
+	width: 200px;
+	border: 2px solid;
+	border-radius: 10px;
+	box-shadow: 10px 10px 5px #888888;
+	padding-bottom: 15px;
+	border: 2px solid;
+}
+
+.device-light {
+	position: absolute;
+	top: 400px;
+	left: 400px;
+	width: 200px;
+	border: 2px solid;
+	border-radius: 10px;
+	box-shadow: 10px 10px 5px #888888;
+	padding-bottom: 15px;
+}
+
+.device-fire {
+	position: absolute;
+	top: 400px;
+	left: 650px;
+	width: 200px;
+	border: 2px solid;
+	border-radius: 10px;
+	box-shadow: 10px 10px 5px #888888;
+	padding-bottom: 15px;
+}
+
+#light-switch {
+	position: absolute;
+	top: 670px;
+	left: 400px;
+	width: 190px;
+	border: 2px solid;
+	border-radius: 10px;
+	box-shadow: 10px 10px 5px #888888;
+	padding: 5px;
+}
+
+#heater-switch {
+	position: absolute;
+	top: 670px;
+	left: 650px;
+	width: 190px;
+	border: 2px solid;
+	border-radius: 10px;
+	box-shadow: 10px 10px 5px #888888;
+	padding: 5px;
+}
+
+#footer {
+	position: fixed;
+	z-index: 0;
+	height: 30px;
+	width: 100%;
+	bottom: 0px;
+	padding: 5px;
+	color: #555;
+}

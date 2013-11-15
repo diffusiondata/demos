@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<logs>
+
+	<!-- The log level to start console logging at -->
+	<console-log-level>INFO</console-log-level>
+	<!-- Indicates whether the data part of Messages should be logged as part 
+		of routine diagnostic message logging (fine and finest levels). If this is 
+		false then credentials message headers will also be hidden -->
+	<log-message-data>true</log-message-data>
+	<!-- The log to use for the server -->
+	<server-log>server</server-log>
+	<!-- The default log folder for all logs, although this can be over-ridden 
+		for each log -->
+	<default-log-directory>../logs</default-log-directory>
+	<async-logging>true</async-logging>
+
+	<!-- Server Log -->
+	<log name="server">
+		<!-- The name of the directory to which this log file will be written -->
+		<log-directory>../logs</log-directory>
+		<!-- / - the local pathname separator. 
+			%t - the system temporary directory 
+			%g - the generation number to distinguish rotated logs 
+			%h - the value of the "user.home" system property 
+			%u - a unique number to resolve conflicts 
+			%s - System type - e.g. 'Diffusion' 
+			%n - System name as defined in Server.xml 
+			%d - Date as specified in diffusion.properties (date.format), this should 
+			be included when using daily rotation 
+			%% - translates to a single percent sign "%" 
+		-->
+		<file-pattern>%s.log</file-pattern>
+		<!-- Specifies the starting log level. Can be SEVERE, WARNING, ADVICE, 
+			INFO, FINE, FINEST -->
+		<level>ADVICE</level>
+		<!-- Indicates whether the log file should be output in XML format -->
+		<xml-format>false</xml-format>
+		<!-- Specifies an approximate maximum amount to write (in bytes) to any 
+			one log file. If this is zero, then there is no limit -->
+		<file-limit>0</file-limit>
+		<!-- Specifies whether log records should be appended to existing log files. 
+			If false then files are overwritten -->
+		<file-append>false</file-append>
+		<!-- Specifies the number of log files to use. Must be at least 1 -->
+		<file-count>1</file-count>
+		<!-- True if the log is to rotate on a daily basis -->
+		<rotate-daily>false</rotate-daily>
+	</log>
+
+	<!-- Statistics Log -->
+	<log name="stats">
+		<log-directory>../logs</log-directory>
+		<file-pattern>stats.log</file-pattern>
+		<level>FINE</level>
+		<xml-format>false</xml-format>
+		<file-limit>1024m</file-limit>
+		<file-append>true</file-append>
+		<file-count>7</file-count>
+		<rotate-daily>true</rotate-daily>
+	</log>
+
+	<!-- Asset Trader Audit Log -->
+	<!-- Un comment to enable Asset trader audit log <log name="TradeAudit"> 
+		<log-directory>logs</log-directory> <file-pattern>TradeAudit.log</file-pattern> 
+		<level>FINE</level> <xml-format>false</xml-format> <file-limit>1024m</file-limit> 
+		<file-append>true</file-append> <file-count>7</file-count> <rotate-daily>true</rotate-daily> 
+		</log> -->
+</logs>

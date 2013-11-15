@@ -1,0 +1,274 @@
+<!doctype html>
+
+<head>
+<link type="text/css" rel="stylesheet" href="css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+<link type="text/css" rel="stylesheet" href="css/detail.css">
+<link type="text/css" rel="stylesheet" href="css/legend.css">
+<link type="text/css" rel="stylesheet" href="css/push.css">
+
+<script type="text/javascript" src="js/d3.v2.js"></script>
+<script type="text/javascript" src="js/rickshaw.js"></script>
+<script type="text/javascript"
+	src="/lib/DIFFUSION/diffusion.uncompressed.js"></script>
+
+
+<script>
+	var graph;
+	var light = false;
+	var heat = false;
+	var mode = "auto";
+	var annotator;
+	var topicName = "Sensors//";
+	var now = new Date().getTime() / 1000;
+	var data1 = [ {
+		x : now,
+		y : 0
+	} ];
+	var data2 = [ {
+		x : now,
+		y : 0
+	} ];
+
+	function onDataEvent(webClientMessage) {
+		var fields = webClientMessage.getFields(0);
+		var topic = webClientMessage.getTopic();
+
+		var split = topic.split("/");
+		var sensor = split[2];
+		var now = new Date().getTime() / 1000;
+		if (split[1] == "Control") {
+			if (fields[0] == "Light On" && !light) {
+				document.getElementById("light-bulb").src = "images/light-on.png";
+				document.getElementById("light-switch-button").src = "images/auto-on.png";
+				light = true;
+				annotator.add(now, fields[0]);
+			} else if (fields[0] == "Light Off" && light) {
+				document.getElementById("light-bulb").src = "images/light-off.png";
+				document.getElementById("light-switch-button").src = "images/auto-off.png";
+				light = false;
+				annotator.add(now, fields[0]);
+			} else if (fields[0] == "Heater On" && !heat) {
+				document.getElementById("fire").src = "images/heat-on.png";
+				document.getElementById("heater-switch-button").src = "images/auto-on.png";
+				heat = true;
+				annotator.add(now, fields[0]);
+			} else if (fields[0] == "Heater Off" && heat) {
+				document.getElementById("fire").src = "images/heat-off.png";
+				document.getElementById("heater-switch-button").src = "images/auto-off.png";
+				heat = false;
+				annotator.add(now, fields[0]);
+			}
+		} else {
+			var value = parseFloat(fields[1]).toFixed(1);
+			if (sensor == "Temp") {
+				data1[data1.length] = {
+					x : now,
+					y : value
+				};
+				if (data1.length > 100) {
+					data1.shift();
+				}
+				document.getElementById("temp-display").innerHTML = value
+						+ "&#176;C";
+			} else {
+				data2[data2.length] = {
+					x : now,
+					y : value
+				};
+				document.getElementById("light-display").innerHTML = value
+						+ "lux";
+				if (data2.length > 100) {
+					data2.shift();
+				}
+			}
+
+			graph.update();
+		}
+	}
+
+	function connected(isConnected) {
+		DiffusionClient.trace("Connected to Diffusion Server");
+		DiffusionClient.subscribe(topicName);
+	}
+
+	function autoMode() {
+		if (mode == "auto") {
+			mode = "manual";
+			document.getElementById("auto-mode-display").innerHTML = "Manual";
+			document.getElementById("auto-mode-icon").src = "images/auto-off.png";
+			document.getElementById("light-switch-button").style.visibility = "visible";
+			document.getElementById("heater-switch-button").style.visibility = "visible";
+		} else {
+			mode = "auto";
+			document.getElementById("auto-mode-display").innerHTML = "Automatic";
+			document.getElementById("auto-mode-icon").src = "images/auto-on.png";
+			document.getElementById("light-switch-button").style.visibility = "hidden";
+			document.getElementById("heater-switch-button").style.visibility = "hidden";
+		}
+		thresholds();
+	}
+
+	function thresholds() {
+		var ttl = document.getElementById("ttl").value;
+		var tth = document.getElementById("tth").value;
+		var tte;
+		var tl = document.getElementById("tl").value;
+		var topicMessage = new TopicMessage("Sensors/Control");
+		topicMessage.putFields(mode, ttl, tth, tte, tl);
+		DiffusionClient.sendTopicMessage(topicMessage);
+	}
+
+	function lightSwitch() {
+		var command = "Light ";
+		if (light) {
+			command += "Off";
+		} else {
+			command += "On";
+		}
+		var topicMessage = new TopicMessage("Sensors/Control/Light", command);
+		DiffusionClient.sendTopicMessage(topicMessage);
+	}
+
+	function heaterSwitch() {
+		var command = "Heater ";
+		if (heat) {
+			command += "Off";
+		} else {
+			command += "On";
+		}
+		var topicMessage = new TopicMessage("Sensors/Control/Heater", command);
+		DiffusionClient.sendTopicMessage(topicMessage);
+	}
+
+	function init() {
+		var tempScale = d3.scale.linear().domain([ 0, 40 ]).range([ 0, 40 ])
+				.nice();
+		var lightScale = d3.scale.linear().domain([ 0, 15 ]).range([ 0, 40 ])
+				.nice();
+
+		graph = new Rickshaw.Graph({
+			element : document.getElementById("chart"),
+			renderer : 'line',
+			series : [ {
+				color : 'blue',
+				data : data1,
+				name : 'Temperature',
+				scale : tempScale
+			}, {
+				color : 'red',
+				data : data2,
+				name : 'Light',
+				scale : lightScale
+			} ]
+		});
+
+		new Rickshaw.Graph.Axis.Y.Scaled({
+			graph : graph,
+			orientation : 'left',
+			tickFormat : Rickshaw.Fixtures.Number.formatKMBT,
+			element : document.getElementById('y_axis'),
+			scale : tempScale
+		});
+
+		new Rickshaw.Graph.Axis.Y.Scaled({
+			graph : graph,
+			orientation : 'right',
+			tickFormat : Rickshaw.Fixtures.Number.formatKMBT,
+			element : document.getElementById('y_axis_2'),
+			scale : lightScale,
+			grid : false
+		});
+
+		new Rickshaw.Graph.HoverDetail({
+			graph : graph
+		});
+
+		var legend = new Rickshaw.Graph.Legend({
+			graph : graph,
+			element : document.getElementById('legend')
+
+		});
+
+		var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+			graph : graph,
+			legend : legend
+		});
+
+		var axes = new Rickshaw.Graph.Axis.Time({
+			graph : graph
+		});
+
+		annotator = new Rickshaw.Graph.Annotate({
+			graph : graph,
+			element : document.getElementById('timeline')
+		});
+
+		axes.render();
+		graph.render();
+
+		/* Assemble some sensible connection details ... */
+		var connectionDetails = {
+			onDataFunction : onDataEvent,
+			onCallbackFunction : connected
+		};
+
+		DiffusionClient.connect(connectionDetails);
+
+		DiffusionClient.setDebugging(true);
+	}
+</script>
+</head>
+<body onload="init()">
+	<h1>Smart Home Demo - Oracle CEP / Diffusion</h1>
+	<div id="chart_container">
+		<div id="y_axis"></div>
+		<div id="chart"></div>
+		<div id="y_axis_2"></div>
+		<div id="legend"></div>
+		<div id="timeline"></div>
+	</div>
+	<div>
+		<div class="auto-mode">
+			<h3>Mode</h3>
+			<h4 id="auto-mode-display">Automatic</h4>
+			<img class="centered" id="auto-mode-icon" width="128" height="128"
+				src="images/auto-on.png" onclick="autoMode()" />
+		</div>
+
+		<div class="device-light">
+			<h3 align="center">Lights</h3>
+			<h4 align="center" id="light-display">- lux</h4>
+			<img class="centered" id="light-bulb" width="128" height="128"
+				src="images/light-off.png" />
+		</div>
+		<div class="device-fire">
+			<h3 align="center">Heating</h3>
+			<h4 align="center" id="temp-display">- &#176;C</h4>
+			<img class="centered" id="fire" src="images/heat-off.png" />
+		</div>
+		<div id="light-switch">
+			<img class="centered hidden" id="light-switch-button" width="64" height="64"
+				src="images/auto-off.png" onclick="lightSwitch()" />
+			<p />
+			<label for="tth">Threshold : </label><input id="tl" type="number"
+				value="5" min="0" max="10" onChange="thresholds()" />
+		</div>
+		<div id="heater-switch">
+			<img class="centered hidden" id="heater-switch-button" width="64"
+				height="64" src="images/auto-off.png" onclick="heaterSwitch()" />
+			<p />
+			<label for="tth">Threshold High : </label><input id="tth"
+				type="number" value="25" min="0" max="40" onChange="thresholds()" />
+			<p />
+			<label for="ttl">Threshold Low : </label><input id="ttl"
+				type="number" value="10" min="0" max="40" onChange="thresholds()" />
+		</div>
+
+	</div>
+	<div id="footer">
+		<a href="http://www.pushtechnology.com"> <img
+			src="images/diffusion.png" />
+		</a>
+	</div>
+</body>

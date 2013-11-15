@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application"
+              xmlns:jdbc="http://www.oracle.com/ns/ocep/config/jdbc">
+              
+    <processor>
+        <name>heatProcessor</name>
+        <rules>
+            <view id="heatView"> <![CDATA[ 
+        select ic.temperature, tc.ttl, tc.tth, tc.tte, tc.mode
+        from heatInputChannel[now] as ic, thresholdCache as tc
+        where tc.sensorId = ic.sensorId
+      ]]> 
+            </view>
+      
+            <query id="heatOnQuery"> <![CDATA[ 
+        select com.oracle.smarthome.cep.House.turnOnHeater() as status, temperature
+        from heatView
+        where temperature < ttl and mode = "auto"
+      ]]> 
+            </query>
+            <query id="heatOffQuery1"> <![CDATA[ 
+        select com.oracle.smarthome.cep.House.turnOffHeater() as status, temperature  
+        from heatView 
+        where temperature > tth and mode = "auto"
+      ]]> 
+            </query>
+            <query id="heatOffQuery2"> <![CDATA[ 
+        select com.oracle.smarthome.cep.House.turnOffHeater() as status, temperature  
+        from heatView 
+        where temperature > tte
+      ]]> 
+            </query>
+        </rules>
+    </processor>
+    <processor>
+        <name>lightProcessor</name>
+        <rules>
+            <view id="lightView"> <![CDATA[ 
+        select ic.intensity, tc.tl, tc.mode
+        from lightInputChannel[now] as ic, thresholdCache as tc 
+        where tc.sensorId = ic.sensorId
+      ]]> 
+            </view>
+
+            <query id="lightOnQuery"> <![CDATA[ 
+        select com.oracle.smarthome.cep.House.turnOnLight() as status, intensity
+        from lightView
+        where intensity < tl and mode = "auto"
+      ]]> 
+            </query>
+            <query id="lightOffQuery"> <![CDATA[ 
+        select com.oracle.smarthome.cep.House.turnOffLight() as status, intensity
+        from lightView
+        where intensity >= tl and mode = "auto"
+      ]]> 
+            </query>
+        </rules>
+    </processor>
+              
+</wlevs:config>
+
