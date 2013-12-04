@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application"
+	xmlns:jdbc="http://www.oracle.com/ns/ocep/config/jdbc">
+
+	<processor>
+		<name>heatProcessor</name>
+		<rules>
+			<view id="avgInsideTempView"><![CDATA[
+		        istream(select avg(temperature) as avgTemperature, sensorId
+		        from heatInputChannel[Range 5 seconds]
+		        where sensorId != "Outside"
+		        group by sensorId
+		        )
+		    ]]></view>
+			<view id="avgOutsideTempView"><![CDATA[
+		        istream(select avg(temperature) as avgTemperature, stuff
+		        from heatInputChannel[Range 5 seconds]
+		        where sensorId = "Outside"
+		        group by stuff
+		        )
+		    ]]></view>
+
+			<view id="outsideTempView">
+		        select avgTemperature, tc.ttl, tc.tth, tc.mode
+		        from avgOutsideTempView[now] as ic, thresholdCache as tc
+		        where ic.stuff = tc.stuff
+		    </view>
+			<view id="insideTempView">
+		        select avgTemperature
+		        from avgOutsideTempView[now]
+		    </view>
+			
+			<query id="heatOnQuery"><![CDATA[ 
+		        select com.oracle.smarthome.cep.House.turnOnHeater() as status, inside.avgTemperature, outside.avgTemperature, outside.ttl, outside.mode
+		        from insideTempView as inside, outsideTempView as outside
+		        where inside.avgTemperature < outside.ttl and outside.avgTemperature < inside.avgTemperature and outside.mode = "auto"
+            ]]></query>
+
+			<query id="heatOffQuery"><![CDATA[ 
+		        select com.oracle.smarthome.cep.House.turnOffHeater() as status, inside.avgTemperature, outside.tth, outside.mode
+		        from insideTempView as inside, outsideTempView as outside
+		        where inside.avgTemperature > outside.tth and outside.mode = "auto"
+            ]]></query>
+		</rules>
+	</processor>
+
+	<processor>
+		<name>lightProcessor</name>
+		<rules>
+			<view id="avgLightView">
+		        istream(select avg(intensity) as avgIntensity, sensorId
+		        from lightInputChannel[Range 5 seconds]
+		        group by sensorId)
+		    </view>
+			<view id="lightView"> 
+		        select ic.avgIntensity, tc.tl, tc.mode
+		        from avgLightView[now] as ic, thresholdCache as tc
+		        where ic.sensorId = tc.sensorId
+            </view>
+
+			<query id="lightOnQuery"><![CDATA[ 
+		        select com.oracle.smarthome.cep.House.turnOnLight() as status, avgIntensity
+		        from lightView
+		        where avgIntensity < tl and mode = "auto"
+            ]]></query>
+			<query id="lightOffQuery"><![CDATA[ 
+		        select com.oracle.smarthome.cep.House.turnOffLight() as status, avgIntensity
+		        from lightView
+		        where avgIntensity >= tl and mode = "auto"
+            ]]></query>
+		</rules>
+	</processor>
+</wlevs:config>
+
