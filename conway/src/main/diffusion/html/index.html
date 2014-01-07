@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta name="&copy; 2012 Push Technology" />
+	<title>Conway's Game of Life Multiplayer</title>
+
+	<script type="text/javascript" src="/lib/DIFFUSION/diffusion.js"></script>
+	<!-- Load the CSS for this demo -->
+	<link rel="stylesheet" type="text/css" href="lib/css/conway.css"></link>
+	<link rel="stylesheet" type="text/css" href="lib/css/bootstrap/css/bootstrap.css"></link>
+	<script type="text/javascript" src="lib/js/jquery-2.0.3.min.js"></script>
+
+	<!-- Load the JS for this demonstration -->
+	<script type="text/javascript" src="lib/js/conway.js"></script>
+	
+	
+</head>
+
+<body onload="javascript: activeGames();">
+	
+	<!--  onload="javascript: onLoad();" -->
+	
+	<div class="hero-unit">
+		<h1>Conway's Game of Life</h1>
+	</div>
+
+	<div class="roominput" id="roomSelect">
+		<form>
+			<fieldset>
+				<p>Enter a game name to join</p>
+				<div id="inputbox" class="input-append">
+					<input type="text" class="input-medium" id="gameName" placeholder="default">
+					<button type="button" class="btn" data-loading-text="Loading..." onclick="javascript: onLoad();">Join</button>
+				</div>
+			</fieldset>
+		</form>
+		<p>Active games:</p>
+		<div class="well" id="activeGames">
+		<p class="muted">Loading...</p>
+		</div>
+	</div>
+	
+	<div id="top">
+		<div id="scores" class="floatLeft">
+			<canvas id="counter"></canvas>
+			<div id="player1"><p></p></div>
+			<div id="player2"><p></p></div>
+			<div id="player3"><p></p></div>
+			<div id="player4"><p></p></div>
+			<div id="player5"><p></p></div>
+			<div id="player6"><p></p></div>
+			<div id="player7"><p></p></div>
+			<div id="player8"><p></p></div>
+			<div id="player9"><p></p></div>
+			<div id="player10"><p></p></div>
+		</div>
+		<div id="container" class="pull-right">
+			<!--  the canvas to draw on, using processing.js  -->
+			<canvas id="main"></canvas>
+		</div>
+	</div>
+	<hr/>
+	<div class="centre well well-large">
+		<p class="lead text-center">Conway's Game of Life rules:</p>
+		<p class="lead text-center">If a live cell has less than 2 live (friendly) cells adjacent, it dies.</p>
+		<p class="lead text-center">If a live cell has more than 3 live (friendly) cells adjacent, it dies.</p>
+		<p class="lead text-center">If an empty cell has exactly 3 live (friendly) cells adjacent, it becomes a live cell.</p>
+		<p class="lead text-center">(Multiplayer) If a live cell has more than 2 live (enemy) cells adjacent, it dies.</p>
+	</div>
+	
+	<script type="text/javascript" src="lib/js/processing-1.4.1.js"></script>
+	<script type="text/javascript" src="lib/js/draw.js"></script>
+	<script type="text/javascript" src="lib/js/ticker.js"></script>
+</body>
+
+</html>

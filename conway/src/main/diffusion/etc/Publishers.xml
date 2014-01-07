@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<publishers>
+	<publisher name="Conway">
+		<class>com.pushtechnology.diffusion.demos.publishers.conway.ConwayPublisher
+		</class>
+		<start>true</start>
+		<launch name="Conway's Game of Life" category="demo">
+			<description>Conway's classic Game of Life with the added twist of multiple users.
+			Each user has a unique colour, and cells of different colours will be treated as enemies
+			when adjacent.
+			</description>
+			<url>/demos/conway</url>
+			<icon>/common/images/drawingBoard.gif</icon>
+		</launch>
+	</publisher>
+</publishers>

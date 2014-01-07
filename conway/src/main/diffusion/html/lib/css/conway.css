@@ -1,0 +1,78 @@
+/* body { */
+/* 	background: #fff url(background.gif); */
+/* 	padding: 0; */
+/* 	margin: 0; */
+/* 	width: 100%; */
+/* 	font-family: Helvetica, serif;  */
+/* 	color: #000; */
+/* } */
+#top {
+	width: 750px;
+	height: 600px;
+	margin: 0px auto;
+	border: 2px solid black;
+	background: #000;
+}
+#container {
+	width: 600px;
+	height: 600px;
+	margin: 0px auto;
+	border: 0px solid black;
+	background: #000;
+}
+
+#activeGames {
+	max-height: 150px;
+	overflow: auto;
+}
+
+#counter {
+	width: 140px;
+	height: 50px;
+}
+
+#scores {
+	width: 140px;
+	height: 600px;
+	margin: 0px auto 0px 6px;
+	border: 1px solid black;
+	font-size: 140%;
+	background: #000;
+}
+.centre {
+	width: 800px;
+	margin: 0px auto;
+	border: 2px solid black;
+	background: #000;
+}
+.roominput {
+	text-align:center;
+	width:300px;
+	background-color:white;
+	margin: 0px 5px 5px -150px;
+	padding: 10px 10px 0px 10px;
+	z-index:10;
+	position:absolute;
+	top:10%;
+	left:50%;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	box-shadow: 0 0 20px 5px black;
+}
+
+.ConnectionDetails { 
+	color: #ddd;  
+	font-size: 80%;
+	font-style:italic;
+	text-shadow: 1px 1px 1px #000; 
+}
+
+.ConnectionDetails p { 
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.floatLeft { float: left; }
+.floatRight { float: right; }
+.clearFloat { clear: both;}
