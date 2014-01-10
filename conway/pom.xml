@@ -6,12 +6,12 @@
   
   <parent>
     <groupId>com.pushtechnology.sample</groupId>
-    <version>1.0</version>
+    <version>1.1</version>
     <artifactId>sample-parent</artifactId>
   </parent>
 	
   <artifactId>conway</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <name>Conway</name>
   <packaging>dar</packaging>
   
@@ -24,7 +24,14 @@
       </plugin>
     </plugins>
   </build>
-  
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>push-repository</id>
+      <url>http://download.pushtechnology.com/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>  
+
   <repositories>
     <repository>
       <id>push-repository</id>
