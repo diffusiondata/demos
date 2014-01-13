@@ -30,6 +30,7 @@ Prerequisites
 -------------
 
 - Diffusion (Tested with v4.6.0)
+- At least JDK 1.6
 - A web-browser supporting the HTML5 Canvas
 
 Building and Installing
