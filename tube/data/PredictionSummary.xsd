@@ -51,6 +51,7 @@
 		</xs:sequence>
 		<xs:attribute name="Code" type="xs:string" use="required"/>
 		<xs:attribute name="N" type="xs:string" use="required"/>
+                <xs:attribute name="Next" type="xs:string" use="required"/>
 	</xs:complexType>
 	
 	<xs:complexType name="Train">

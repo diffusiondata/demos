@@ -1,6 +1,8 @@
 /* COPYRIGHT (c) 2013 Push Technology Ltd. */
 package com.pushtechnology.diffusion.demos.tube.model;
 
+import com.pushtechnology.diffusion.api.Logs;
+import com.pushtechnology.diffusion.api.Utils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,8 +18,10 @@ import javax.xml.validation.SchemaFactory;
 import com.pushtechnology.diffusion.api.data.metadata.MRecord;
 import com.pushtechnology.diffusion.api.message.MessageException;
 import com.pushtechnology.diffusion.api.message.Record;
+import com.pushtechnology.diffusion.demos.tube.TubePublisher;
 import com.pushtechnology.diffusion.demos.tube.xml.routes.Routes;
 import com.pushtechnology.diffusion.demos.tube.xml.stations.Stations;
+import java.net.URL;
 
 public enum ModelHandler {
 
@@ -47,17 +51,21 @@ public enum ModelHandler {
 
         JAXBContext ctx;
 
+        Logs.finest("++AST: Loading stations");
+        Logs.finest("++AST: url=" + TubePublisher.class.getClassLoader().getResource("."));
+        Logs.finest("++AST: url=" + TubePublisher.class.getClassLoader().getResource("data/stations.xsd"));
+        Logs.finest("++AST: url=" + ModelHandler.class.getClassLoader().getResource("data/stations.xsd"));
+        Logs.finest("++AST: stations = " + ModelHandler.class.getClassLoader().getResourceAsStream("data/stations.xsd"));
+
         ctx = JAXBContext.newInstance(Stations.class);
             SchemaFactory factory =
                 SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema =
-                factory.newSchema(new StreamSource(getClass().getClassLoader()
-                    .getResourceAsStream("data/stations.xsd")));
+                factory.newSchema(new StreamSource(getClass().getClassLoader().getResourceAsStream("data/stations.xsd")));
             Unmarshaller unmarshaller = ctx.createUnmarshaller();
             unmarshaller.setSchema(schema);
             Stations stations =
-                (Stations)unmarshaller.unmarshal(getClass().getClassLoader()
-                    .getResourceAsStream("data/stations.xml"));
+                (Stations)unmarshaller.unmarshal(getClass().getClassLoader().getResourceAsStream("data/stations.xml"));
 
         for(com.pushtechnology.diffusion.demos.tube.xml.stations.Station stn : stations.getStation()) {
             Station model = new Station(stn.getCode(), stn.getName(), stn.getDescription(),stn.getCoords().getLat(), stn.getCoords().getLon());
@@ -73,12 +81,11 @@ public enum ModelHandler {
         ctx = JAXBContext.newInstance(Routes.class);
         SchemaFactory factory = SchemaFactory
                 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = factory.newSchema(new StreamSource(getClass()
-                .getClassLoader().getResourceAsStream("data/routes.xsd")));
+        Schema schema = factory.newSchema(new StreamSource(Utils.getResourceAsStream("data/routes.xsd")));
         Unmarshaller unmarshaller = ctx.createUnmarshaller();
         unmarshaller.setSchema(schema);
 
-        Routes routes = (Routes) unmarshaller.unmarshal(getClass().getClassLoader().getResourceAsStream("data/routes.xml"));
+        Routes routes = (Routes) unmarshaller.unmarshal(Utils.getResourceAsStream("data/routes.xml"));
 
         for(com.pushtechnology.diffusion.demos.tube.xml.routes.Line line : routes.getLine()) {
             for(com.pushtechnology.diffusion.demos.tube.xml.routes.Station stnRoute : line.getStation()) {

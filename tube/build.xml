@@ -2,7 +2,7 @@
 <project name="TubePublisher" default="deploy">
 
 	<property name="publisher.name" value="TubePublisher" />
-        <property name="diffusion.jar" value="/home/adam/Apps/Diffusion/Diffusion4.5.4_01/lib/diffusion.jar" />
+        <property name="diffusion.jar" value="/home/adam/Apps/Diffusion/Diffusion5.0.0_01/lib/diffusion.jar" />
 	<property name="jar.name" value="${publisher.name}.jar" />
 	<property name="dar.name" value="${publisher.name}.dar" />
 	<property name="diffusion.deploy.service" value="http://localhost:8080/deploy" />
@@ -32,6 +32,11 @@
 				<include name="html/**" />
 			</fileset>
 		</copy>
+                <copy todir="deploy/${publisher.name}/etc">
+                        <fileset dir=".">
+                                <include name="data/**"/>
+                        </fileset>
+                </copy>
 		<copy todir="deploy/${publisher.name}/ext" file="${jar.name}" />
 		<jar jarfile="${dar.name}" includes="${publisher.name}/**" basedir="deploy" manifest="META-INF/MANIFEST.MF" />
 	</target>
