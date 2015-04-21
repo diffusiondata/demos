@@ -1,0 +1,1041 @@
+<?xml version="1.0"?>
+<routes>
+  <line id="C">
+    <station id="WRP">
+      <next>RUG</next>
+    </station>
+    <station id="RUG">
+      <prev>WRP</prev>
+      <next>SRP</next>
+    </station>
+    <station id="SRP">
+      <prev>RUG</prev>
+      <next>NHT</next>
+    </station>
+    <station id="NHT">
+      <prev>SRP</prev>
+      <next>GFD</next>
+    </station>
+    <station id="GFD">
+      <prev>NHT</prev>
+      <next>PER</next>
+    </station>
+    <station id="PER">
+      <prev>GFD</prev>
+      <next>HLN</next>
+    </station>
+    <station id="HLN">
+      <prev>PER</prev>
+      <next>NAC</next>
+    </station>
+    <station id="NAC">
+      <prev>HLN</prev>
+      <prev>WAC</prev>
+      <next>EAC</next>
+    </station>
+    <station id="EAC">
+      <prev>NAC</prev>
+      <next>WCT</next>
+    </station>
+    <station id="WCT">
+      <prev>EAC</prev>
+      <next>SBC</next>
+    </station>
+    <station id="SBC">
+      <prev>WCT</prev>
+      <next>HPK</next>
+    </station>
+    <station id="HPK">
+      <prev>SBC</prev>
+      <next>NHG</next>
+    </station>
+    <station id="NHG">
+      <prev>HPK</prev>
+      <next>QWY</next>
+    </station>
+    <station id="QWY">
+      <prev>NHG</prev>
+      <next>LAN</next>
+    </station>
+    <station id="LAN">
+      <prev>QWY</prev>
+      <next>MAR</next>
+    </station>
+    <station id="MAR">
+      <prev>LAN</prev>
+      <next>BDS</next>
+    </station>
+    <station id="BDS">
+      <prev>MAR</prev>
+      <next>OXC</next>
+    </station>
+    <station id="OXC">
+      <prev>BDS</prev>
+      <next>TCR</next>
+    </station>
+    <station id="TCR">
+      <prev>OXC</prev>
+      <next>HOL</next>
+    </station>
+    <station id="HOL">
+      <prev>TCR</prev>
+      <next>CYL</next>
+    </station>
+    <station id="CYL">
+      <prev>HOL</prev>
+      <next>STP</next>
+    </station>
+    <station id="STP">
+      <prev>CYL</prev>
+      <next>BNK</next>
+    </station>
+    <station id="BNK">
+      <prev>STP</prev>
+      <next>LST</next>
+    </station>
+    <station id="LST">
+      <prev>BNK</prev>
+      <next>BNG</next>
+    </station>
+    <station id="BNG">
+      <prev>LST</prev>
+      <next>MLE</next>
+    </station>
+    <station id="MLE">
+      <prev>BNG</prev>
+      <next>SFD</next>
+    </station>
+    <station id="SFD">
+      <prev>MLE</prev>
+      <next>LEY</next>
+    </station>
+    <station id="LEY">
+      <prev>SFD</prev>
+      <next>LYS</next>
+    </station>
+    <station id="LYS">
+      <prev>LEY</prev>
+      <next>SNB</next>
+      <next>WAN</next>
+    </station>
+    <station id="SNB">
+      <prev>LYS</prev>
+      <next>SWF</next>
+    </station>
+    <station id="SWF">
+      <prev>SNB</prev>
+      <next>WFD</next>
+    </station>
+    <station id="WFD">
+      <prev>SWF</prev>
+      <prev>ROD</prev>
+      <next>BHL</next>
+    </station>
+    <station id="BHL">
+      <prev>WFD</prev>
+      <next>LTN</next>
+    </station>
+    <station id="LTN">
+      <prev>BHL</prev>
+      <next>DEB</next>
+    </station>
+    <station id="DEB">
+      <prev>LTN</prev>
+      <next>THB</next>
+    </station>
+    <station id="THB">
+      <prev>DEB</prev>
+      <next>EPP</next>
+    </station>
+    <station id="EPP">
+      <prev>THB</prev>
+    </station>
+    <station id="EBY">
+      <next>WAC</next>
+    </station>
+    <station id="WAC">
+      <prev>EBY</prev>
+      <next>NAC</next>
+    </station>
+    <station id="WAN">
+      <prev>LYS</prev>
+      <next>RED</next>
+    </station>
+    <station id="RED">
+      <prev>WAN</prev>
+      <next>GHL</next>
+    </station>
+    <station id="GHL">
+      <prev>RED</prev>
+      <next>NEP</next>
+    </station>
+    <station id="NEP">
+      <prev>GHL</prev>
+      <next>BDE</next>
+    </station>
+    <station id="BDE">
+      <prev>NEP</prev>
+      <next>FLP</next>
+    </station>
+    <station id="FLP">
+      <prev>BDE</prev>
+      <next>HAI</next>
+    </station>
+    <station id="HAI">
+      <prev>FLP</prev>
+      <next>GRH</next>
+    </station>
+    <station id="GRH">
+      <prev>HAI</prev>
+      <next>CHG</next>
+    </station>
+    <station id="CHG">
+      <prev>GRH</prev>
+      <next>ROD</next>
+    </station>
+    <station id="ROD">
+      <prev>CHG</prev>
+      <next>WFD</next>
+    </station>
+  </line>
+  <line id="W">
+    <station id="BNK">
+      <next>WLO</next>
+    </station>
+    <station id="WLO">
+      <prev>BNK</prev>
+    </station>
+  </line>
+  <line id="J">
+    <station id="STA">
+      <next>CPK</next>
+    </station>
+    <station id="CPK">
+      <prev>STA</prev>
+      <next>QBY</next>
+    </station>
+    <station id="QBY">
+      <prev>CPK</prev>
+      <next>KBY</next>
+    </station>
+    <station id="KBY">
+      <prev>QBY</prev>
+      <next>WPK</next>
+    </station>
+    <station id="WPK">
+      <prev>KBY</prev>
+      <next>NEA</next>
+    </station>
+    <station id="NEA">
+      <prev>WPK</prev>
+      <next>DHL</next>
+    </station>
+    <station id="DHL">
+      <prev>NEA</prev>
+      <next>WLG</next>
+    </station>
+    <station id="WLG">
+      <prev>DHL</prev>
+      <next>KIL</next>
+    </station>
+    <station id="KIL">
+      <prev>WLG</prev>
+      <next>WHD</next>
+    </station>
+    <station id="WHD">
+      <prev>KIL</prev>
+      <next>FRD</next>
+    </station>
+    <station id="FRD">
+      <prev>WHD</prev>
+      <next>SWC</next>
+    </station>
+    <station id="SWC">
+      <prev>FRD</prev>
+      <next>SJW</next>
+    </station>
+    <station id="SJW">
+      <prev>SWC</prev>
+      <next>BST</next>
+    </station>
+    <station id="BST">
+      <prev>SJW</prev>
+      <next>BDS</next>
+    </station>
+    <station id="BDS">
+      <prev>BST</prev>
+      <next>GPK</next>
+    </station>
+    <station id="GPK">
+      <prev>BDS</prev>
+      <next>WMS</next>
+    </station>
+    <station id="WMS">
+      <prev>GPK</prev>
+      <next>WLO</next>
+    </station>
+    <station id="WLO">
+      <prev>WMS</prev>
+      <next>SWK</next>
+      <next>KEN</next>
+    </station>
+    <station id="SWK">
+      <prev>WLO</prev>
+      <next>LON</next>
+    </station>
+    <station id="LON">
+      <prev>SWK</prev>
+      <next>BER</next>
+    </station>
+    <station id="BER">
+      <prev>LON</prev>
+      <next>CWR</next>
+    </station>
+    <station id="CWR">
+      <prev>BER</prev>
+      <next>CWF</next>
+    </station>
+    <station id="CWF">
+      <prev>CWR</prev>
+      <next>NGW</next>
+    </station>
+    <station id="NGW">
+      <prev>CWF</prev>
+      <next>CNT</next>
+    </station>
+    <station id="CNT">
+      <prev>NGW</prev>
+      <next>WHM</next>
+    </station>
+    <station id="WHM">
+      <prev>CNT</prev>
+      <next>SFD</next>
+    </station>
+    <station id="SFD">
+      <prev>WHM</prev>
+    </station>
+  </line>
+  <line id="N">
+    <station id="HBT">
+      <next>TOT</next>
+    </station>
+    <station id="TOT">
+      <prev>HBT</prev>
+      <next>WSP</next>
+    </station>
+    <station id="WSP">
+      <prev>TOT</prev>
+      <next>WFY</next>
+    </station>
+    <station id="WFY">
+      <prev>WSP</prev>
+      <next>FYC</next>
+    </station>
+    <station id="FYC">
+      <prev>WFY</prev>
+      <prev>MHE</prev>
+      <next>EFY</next>
+    </station>
+    <station id="EFY">
+      <prev>FYC</prev>
+      <next>HIG</next>
+    </station>
+    <station id="HIG">
+      <prev>EFY</prev>
+      <next>ARC</next>
+    </station>
+    <station id="ARC">
+      <prev>HIG</prev>
+      <next>TPK</next>
+    </station>
+    <station id="TPK">
+      <prev>ARC</prev>
+      <next>KTN</next>
+    </station>
+    <station id="KTN">
+      <prev>TPK</prev>
+      <next>CTN</next>
+    </station>
+    <station id="CTN">
+      <prev>KTN</prev>
+      <prev>CHF</prev>
+      <next>MCR</next>
+      <next>EUS</next>
+    </station>
+    <station id="MCR">
+      <prev>CTN</prev>
+      <next>EUS</next>
+    </station>
+    <station id="EUS">
+      <prev>MCR</prev>
+      <prev>CTN</prev>
+      <next>KXX</next>
+      <next>WST</next>
+    </station>
+    <station id="KXX">
+      <prev>EUS</prev>
+      <next>ANG</next>
+    </station>
+    <station id="ANG">
+      <prev>KXX</prev>
+      <next>OLD</next>
+    </station>
+    <station id="OLD">
+      <prev>ANG</prev>
+      <next>MGT</next>
+    </station>
+    <station id="MGT">
+      <prev>OLD</prev>
+      <next>BNK</next>
+    </station>
+    <station id="BNK">
+      <prev>MGT</prev>
+      <next>LON</next>
+    </station>
+    <station id="LON">
+      <prev>BNK</prev>
+      <next>BOR</next>
+    </station>
+    <station id="BOR">
+      <prev>LON</prev>
+      <next>ELE</next>
+    </station>
+    <station id="ELE">
+      <prev>BOR</prev>
+      <prev>ELE</prev>
+      <next>KEN</next>
+    </station>
+    <station id="KEN">
+      <prev>ELE</prev>
+      <prev>WLO</prev>
+      <next>OVL</next>
+    </station>
+    <station id="OVL">
+      <prev>KEN</prev>
+      <next>STK</next>
+    </station>
+    <station id="STK">
+      <prev>OVL</prev>
+      <next>CPN</next>
+    </station>
+    <station id="CPN">
+      <prev>STK</prev>
+      <next>CPC</next>
+    </station>
+    <station id="CPC">
+      <prev>CPN</prev>
+      <next>CPS</next>
+    </station>
+    <station id="CPS">
+      <prev>CPC</prev>
+      <next>BAL</next>
+    </station>
+    <station id="BAL">
+      <prev>CPS</prev>
+      <next>TBE</next>
+    </station>
+    <station id="TBE">
+      <prev>BAL</prev>
+      <next>TBY</next>
+    </station>
+    <station id="TBY">
+      <prev>TBE</prev>
+      <next>CLW</next>
+    </station>
+    <station id="CLW">
+      <prev>TBY</prev>
+      <next>SWM</next>
+    </station>
+    <station id="SWM">
+      <prev>CLW</prev>
+      <next>MOR</next>
+    </station>
+    <station id="MOR">
+      <prev>SWM</prev>
+    </station>
+    <station id="MHE">
+      <next>FYC</next>
+    </station>
+    <station id="EDG">
+      <next>BUR</next>
+    </station>
+    <station id="BUR">
+      <prev>EDG</prev>
+      <next>COL</next>
+    </station>
+    <station id="COL">
+      <prev>BUR</prev>
+      <next>HND</next>
+    </station>
+    <station id="HND">
+      <prev>COL</prev>
+      <next>BTX</next>
+    </station>
+    <station id="BTX">
+      <prev>HND</prev>
+      <next>GGR</next>
+    </station>
+    <station id="GGR">
+      <prev>BTX</prev>
+      <next>HMP</next>
+    </station>
+    <station id="HMP">
+      <prev>GGR</prev>
+      <next>BPK</next>
+    </station>
+    <station id="BPK">
+      <prev>HMP</prev>
+      <next>CHF</next>
+    </station>
+    <station id="CHF">
+      <prev>BPK</prev>
+      <next>CTN</next>
+    </station>
+    <station id="WST">
+      <prev>EUS</prev>
+      <next>GST</next>
+    </station>
+    <station id="GST">
+      <prev>WST</prev>
+      <next>LSQ</next>
+    </station>
+    <station id="LSQ">
+      <prev>GST</prev>
+      <next>CHX</next>
+    </station>
+    <station id="CHX">
+      <prev>LSQ</prev>
+      <next>EMB</next>
+    </station>
+    <station id="EMB">
+      <prev>CHX</prev>
+      <next>WLO</next>
+    </station>
+    <station id="WLO">
+      <prev>EMB</prev>
+      <next/>
+    </station>
+  </line>
+  <line id="V">
+    <station id="WAL">
+      <next>BHR</next>
+    </station>
+    <station id="BHR">
+      <prev>WAL</prev>
+      <next>TTH</next>
+    </station>
+    <station id="TTH">
+      <prev>BHR</prev>
+      <next>SVS</next>
+    </station>
+    <station id="SVS">
+      <prev>TTH</prev>
+      <next>FPK</next>
+    </station>
+    <station id="FPK">
+      <prev>SVS</prev>
+      <next>HBY</next>
+    </station>
+    <station id="HBY">
+      <prev>FPK</prev>
+      <next>KXX</next>
+    </station>
+    <station id="KXX">
+      <prev>HBY</prev>
+      <next>EUS</next>
+    </station>
+    <station id="EUS">
+      <prev>KXX</prev>
+      <next>WST</next>
+    </station>
+    <station id="WST">
+      <prev>EUS</prev>
+      <next>OXC</next>
+    </station>
+    <station id="OXC">
+      <prev>WST</prev>
+      <next>GPK</next>
+    </station>
+    <station id="GPK">
+      <prev>OXC</prev>
+      <next>VIC</next>
+    </station>
+    <station id="VIC">
+      <prev>GPK</prev>
+      <next>PIM</next>
+    </station>
+    <station id="PIM">
+      <prev>VIC</prev>
+      <next>VUX</next>
+    </station>
+    <station id="VUX">
+      <prev>PIM</prev>
+      <next>STK</next>
+    </station>
+    <station id="STK">
+      <prev>VUX</prev>
+      <next>BRX</next>
+    </station>
+    <station id="BRX">
+      <prev>STK</prev>
+    </station>
+  </line>
+  <line id="P">
+    <station id="UXB">
+      <next>HDN</next>
+    </station>
+    <station id="HDN">
+      <prev>UXB</prev>
+      <next>ICK</next>
+    </station>
+    <station id="ICK">
+      <prev>HDN</prev>
+      <next>RUI</next>
+    </station>
+    <station id="RUI">
+      <prev>ICK</prev>
+      <next>RUM</next>
+    </station>
+    <station id="RUM">
+      <prev>RUI</prev>
+      <next>ETE</next>
+    </station>
+    <station id="ETE">
+      <prev>RUM</prev>
+      <next>RLN</next>
+    </station>
+    <station id="RLN">
+      <prev>ETE</prev>
+      <next>SHR</next>
+    </station>
+    <station id="SHR">
+      <prev>RLN</prev>
+      <next>SHL</next>
+    </station>
+    <station id="SHL">
+      <prev>SHR</prev>
+      <next>STN</next>
+    </station>
+    <station id="STN">
+      <prev>SHL</prev>
+      <next>ALP</next>
+    </station>
+    <station id="ALP">
+      <prev>STN</prev>
+      <next>PRY</next>
+    </station>
+    <station id="PRY">
+      <prev>ALP</prev>
+      <next>NEL</next>
+    </station>
+    <station id="NEL">
+      <prev>PRY</prev>
+      <next>ECM</next>
+    </station>
+    <station id="ECM">
+      <prev>NEL</prev>
+      <next>ACT</next>
+    </station>
+    <station id="ACT">
+      <prev>ECM</prev>
+      <prev>SEL</prev>
+      <next>TGR</next>
+    </station>
+    <station id="TGR">
+      <prev>ACT</prev>
+      <next>HMS</next>
+    </station>
+    <station id="HMS">
+      <prev>TGR</prev>
+      <next>BCT</next>
+    </station>
+    <station id="BCT">
+      <prev>HMS</prev>
+      <next>ECT</next>
+    </station>
+    <station id="ECT">
+      <prev>BCT</prev>
+      <next>GRD</next>
+    </station>
+    <station id="GRD">
+      <prev>ECT</prev>
+      <next>SKN</next>
+    </station>
+    <station id="SKN">
+      <prev>GRD</prev>
+      <next>KNB</next>
+    </station>
+    <station id="KNB">
+      <prev>SKN</prev>
+      <next>HPC</next>
+    </station>
+    <station id="HPC">
+      <prev>KNB</prev>
+      <next>GPK</next>
+    </station>
+    <station id="GPK">
+      <prev>HPC</prev>
+      <next>PIC</next>
+    </station>
+    <station id="PIC">
+      <prev>GPK</prev>
+      <next>LSQ</next>
+    </station>
+    <station id="LSQ">
+      <prev>PIC</prev>
+      <next>COV</next>
+    </station>
+    <station id="COV">
+      <prev>LSQ</prev>
+      <next>HOL</next>
+    </station>
+    <station id="HOL">
+      <prev>COV</prev>
+      <next>RSQ</next>
+    </station>
+    <station id="RSQ">
+      <prev>HOL</prev>
+      <next>KXX</next>
+    </station>
+    <station id="KXX">
+      <prev>RSQ</prev>
+      <next>CRD</next>
+    </station>
+    <station id="CRD">
+      <prev>KXX</prev>
+      <next>HRD</next>
+    </station>
+    <station id="HRD">
+      <prev>CRD</prev>
+      <next>ARL</next>
+    </station>
+    <station id="ARL">
+      <prev>HRD</prev>
+      <next>FPK</next>
+    </station>
+    <station id="FPK">
+      <prev>ARL</prev>
+      <next>MNR</next>
+    </station>
+    <station id="MNR">
+      <prev>FPK</prev>
+      <next>TPL</next>
+    </station>
+    <station id="TPL">
+      <prev>MNR</prev>
+      <next>WGN</next>
+    </station>
+    <station id="WGN">
+      <prev>TPL</prev>
+      <next>BGR</next>
+    </station>
+    <station id="BGR">
+      <prev>WGN</prev>
+      <next>AGR</next>
+    </station>
+    <station id="AGR">
+      <prev>BGR</prev>
+      <next>SGT</next>
+    </station>
+    <station id="SGT">
+      <prev>AGR</prev>
+      <next>OAK</next>
+    </station>
+    <station id="OAK">
+      <prev>SGT</prev>
+      <next>CFS</next>
+    </station>
+    <station id="CFS">
+      <prev>OAK</prev>
+    </station>
+    <station id="HTF">
+      <prev>HTX</prev>
+      <next>HRC</next>
+    </station>
+    <station id="HTV">
+      <next>HRC</next>
+    </station>
+    <station id="HRC">
+      <prev>HTV</prev>
+      <prev>HTF</prev>
+      <next>HTX</next>
+    </station>
+    <station id="HTX">
+      <prev>HRC</prev>
+      <next>HNW</next>
+      <next>HTF</next>
+    </station>
+    <station id="HNW">
+      <prev>HTX</prev>
+      <next>HNC</next>
+    </station>
+    <station id="HNC">
+      <prev>HNW</prev>
+      <next>HNE</next>
+    </station>
+    <station id="HNE">
+      <prev>HNC</prev>
+      <next>OST</next>
+    </station>
+    <station id="OST">
+      <prev>HNE</prev>
+      <next>BOS</next>
+    </station>
+    <station id="BOS">
+      <prev>OST</prev>
+      <next>NFD</next>
+    </station>
+    <station id="NFD">
+      <prev>BOS</prev>
+      <next>SEL</next>
+    </station>
+    <station id="SEL">
+      <prev>NFD</prev>
+    </station>
+  </line>
+
+  <line id="D">
+    <station id="EBY">
+      <next>ECM</next>
+    </station>
+    <station id="ECM">
+      <prev>EBY</prev>
+      <next>ACT</next>
+    </station>
+    <station id="ACT">
+      <prev>ECM</prev>
+      <next>CHP</next>
+    </station>
+    <station id="CHP">
+      <prev>ACT</prev>
+      <next>TGR</next>
+    </station>
+    <station id="TGR">
+      <prev>CHP</prev>
+      <prev>GUN</prev>
+      <next>STB</next>
+    </station>
+    <station id="STB">
+      <prev>TGR</prev>
+      <next>RCP</next>
+    </station>
+    <station id="RCP">
+      <prev>STB</prev>
+      <next>HMS</next>
+    </station>
+    <station id="HMS">
+      <prev>RCP</prev>
+      <next>BCT</next>
+    </station>
+    <station id="BCT">
+      <prev>HMS</prev>
+      <next>WKN</next>
+    </station>
+    <station id="WKN">
+      <prev>BCT</prev>
+      <next>ECT</next>
+    </station>
+    <station id="ECT">
+      <prev>WKN</prev>
+      <prev>OLY</prev>
+      <prev>WBT</prev>
+      <prev>HST</prev>
+      <next>GRD</next>
+    </station>
+    <station id="GRD">
+      <prev>ECT</prev>
+      <next>SKN</next>
+    </station>
+    <station id="SKN">
+      <prev>GRD</prev>
+      <next>SSQ</next>
+    </station>
+    <station id="SSQ">
+      <prev>SKN</prev>
+      <next>VIC</next>
+    </station>
+    <station id="VIC">
+      <prev>SSQ</prev>
+      <next>SJP</next>
+    </station>
+    <station id="SJP">
+      <prev>VIC</prev>
+      <next>WMS</next>
+    </station>
+    <station id="WMS">
+      <prev>SJP</prev>
+      <next>EMB</next>
+    </station>
+    <station id="EMB">
+      <prev>WMS</prev>
+      <next>TEM</next>
+    </station>
+    <station id="TEM">
+      <prev>EMB</prev>
+      <next>BLF</next>
+    </station>
+    <station id="BLF">
+      <prev>TEM</prev>
+      <next>MAN</next>
+    </station>
+    <station id="MAN">
+      <prev>BLF</prev>
+      <next>CST</next>
+    </station>
+    <station id="CST">
+      <prev>MAN</prev>
+      <next>MON</next>
+    </station>
+    <station id="MON">
+      <prev>CST</prev>
+      <next>THL</next>
+    </station>
+    <station id="THL">
+      <prev>MON</prev>
+      <next>ALE</next>
+    </station>
+    <station id="ALE">
+      <prev>THL</prev>
+      <next>WCL</next>
+    </station>
+    <station id="WCL">
+      <prev>ALE</prev>
+      <next>STG</next>
+    </station>
+    <station id="STG">
+      <prev>WCL</prev>
+      <next>MLE</next>
+    </station>
+    <station id="MLE">
+      <prev>STG</prev>
+      <next>BWR</next>
+    </station>
+    <station id="BWR">
+      <prev>MLE</prev>
+      <next>BBB</next>
+    </station>
+    <station id="BBB">
+      <prev>BWR</prev>
+      <next>WHM</next>
+    </station>
+    <station id="WHM">
+      <prev>BBB</prev>
+      <next>PLW</next>
+    </station>
+    <station id="PLW">
+      <prev>WHM</prev>
+      <next>UPK</next>
+    </station>
+    <station id="UPK">
+      <prev>PLW</prev>
+      <next>EHM</next>
+    </station>
+    <station id="EHM">
+      <prev>UPK</prev>
+      <next>BKG</next>
+    </station>
+    <station id="BKG">
+      <prev>EHM</prev>
+      <next>UPY</next>
+    </station>
+    <station id="UPY">
+      <prev>BKG</prev>
+      <next>BEC</next>
+    </station>
+    <station id="BEC">
+      <prev>UPY</prev>
+      <next>DGH</next>
+    </station>
+    <station id="DGH">
+      <prev>BEC</prev>
+      <next>DGE</next>
+    </station>
+    <station id="DGE">
+      <prev>DGH</prev>
+      <next>EPK</next>
+    </station>
+    <station id="EPK">
+      <prev>DGE</prev>
+      <next>HCH</next>
+    </station>
+    <station id="HCH">
+      <prev>EPK</prev>
+      <next>UPB</next>
+    </station>
+    <station id="UPB">
+      <prev>HCH</prev>
+      <next>UPM</next>
+    </station>
+    <station id="UPM">
+      <prev>UPB</prev>
+    </station>
+
+    <station id="RMD">
+      <next>KEW</next>
+    </station>
+    <station id="KEW">
+      <prev>RMD</prev>
+      <next>GUN</next>
+    </station>
+    <station id="GUN">
+      <prev>KEW</prev>
+      <next>TGR</next>
+    </station>
+
+    <station id="OLY">
+      <next>ECT</next>
+    </station>
+
+    <station id="ERD">
+      <next>PAD</next>
+    </station>
+    <station id="PAD">
+      <prev>ERD</prev>
+      <next>BAY</next>
+    </station>
+    <station id="BAY">
+      <prev>PAD</prev>
+      <next>NHG</next>
+    </station>
+    <station id="NHG">
+      <prev>BAY</prev>
+      <next>HST</next>
+    </station>
+    <station id="HST">
+      <prev>NHG</prev>
+      <next>ECT</next>
+    </station>
+
+    <station id="WDN">
+      <next>WMP</next>
+    </station>
+    <station id="WMP">
+      <prev>WDN</prev>
+      <next>SFS</next>
+    </station>
+    <station id="SFS">
+      <prev>WMP</prev>
+      <next>EPY</next>
+    </station>
+    <station id="EPY">
+      <prev>SFS</prev>
+      <next>PUT</next>
+    </station>
+    <station id="PUT">
+      <prev>EPY</prev>
+      <next>PGR</next>
+    </station>
+    <station id="PGR">
+      <prev>PUT</prev>
+      <next>FBY</next>
+    </station>
+    <station id="FBY">
+      <prev>PGR</prev>
+      <next>WBT</next>
+    </station>
+    <station id="WBT">
+      <prev>FBY</prev>
+      <next>ECT</next>
+    </station>
+  </line>
+</routes>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="stations">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="station" type="station" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="station">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="coords" type="coords" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="code" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="active" type="xs:boolean" use="optional" default="true"/>
+  </xs:complexType>
+  
+  <xs:complexType name="coords">
+    <xs:sequence>
+      <xs:element name="lat" type="xs:double" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="lon" type="xs:double" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
