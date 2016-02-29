@@ -21,13 +21,13 @@ import com.pushtechnology.diffusion.demos.tube.xml.stations.Stations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-
 public enum ModelHandler {
 
     INSTANCE;
 
-    private static final Logger LOG = LoggerFactory.getLogger(ModelHandler.class);
+    private static final class Helper {
+        public static Logger LOG = LoggerFactory.getLogger(ModelHandler.class);
+    }
 
     private ConcurrentMap<String, Station> stationMap;
     private ConcurrentMap<String, Routing> routingMap;
@@ -35,7 +35,7 @@ public enum ModelHandler {
 
     private ConcurrentMap<String, TrainStatus> trainStatusMap;
 
-    private ModelHandler() {
+    ModelHandler() {
         trainStatusMap = new ConcurrentHashMap<String, TrainStatus>();
 
         try {
@@ -53,11 +53,11 @@ public enum ModelHandler {
 
         JAXBContext ctx;
 
-        LOG.debug("++AST: Loading stations");
-        //Logs.finest("++AST: url=" + TubePublisher.class.getClassLoader().getResource("."));
-        LOG.debug("++AST: url=" + getClass().getResourceAsStream("stations.xsd"));
-        LOG.debug("++AST: url=" + ModelHandler.class.getResourceAsStream("stations.xsd"));
-        LOG.debug("++AST: stations = " + ModelHandler.class.getResourceAsStream("stations.xsd"));
+        Helper.LOG.debug("++AST: Loading stations");
+        //LOG.debug("++AST: url=" + TubePublisher.class.getClassLoader().getResource("."));
+        Helper.LOG.debug("++AST: url=" + getClass().getResourceAsStream("stations.xsd"));
+        Helper.LOG.debug("++AST: url=" + ModelHandler.class.getResourceAsStream("stations.xsd"));
+        Helper.LOG.debug("++AST: stations = " + ModelHandler.class.getResourceAsStream("stations.xsd"));
 
         ctx = JAXBContext.newInstance(Stations.class);
             SchemaFactory factory =
