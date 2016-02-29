@@ -16,7 +16,6 @@ import javax.xml.validation.SchemaFactory;
 import com.pushtechnology.diffusion.api.data.metadata.MRecord;
 import com.pushtechnology.diffusion.api.message.MessageException;
 import com.pushtechnology.diffusion.api.message.Record;
-import com.pushtechnology.diffusion.demos.tube.TubePublisher;
 import com.pushtechnology.diffusion.demos.tube.xml.routes.Routes;
 import com.pushtechnology.diffusion.demos.tube.xml.stations.Stations;
 import org.slf4j.Logger;
