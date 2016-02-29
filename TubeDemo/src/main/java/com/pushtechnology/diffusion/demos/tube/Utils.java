@@ -1,15 +1,17 @@
 /* COPYRIGHT (c) 2013 Push Technology Ltd. */
 package com.pushtechnology.diffusion.demos.tube;
 
-import com.pushtechnology.diffusion.api.Logs;
 import com.pushtechnology.diffusion.demos.tube.model.ModelHandler;
 import com.pushtechnology.diffusion.demos.tube.model.Station;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Some general-purpose methods 
  */
 public class Utils {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
     private static final String[] TRIM_PHRASES = new String[] { " via ", " Platform", " platform", " (", " ex ", " towards " };
 
     /**
@@ -123,7 +125,7 @@ public class Utils {
             }
         }
 
-        Logs.finest("Didn't find station code for " + name + " ("+ searchName + ")");
+        LOG.debug("Didn't find station code for " + name + " ("+ searchName + ")");
         return null;
     }
 }

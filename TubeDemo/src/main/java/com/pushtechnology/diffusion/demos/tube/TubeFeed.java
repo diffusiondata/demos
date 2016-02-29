@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pushtechnology.diffusion.api.APIException;
-import com.pushtechnology.diffusion.api.Logs;
 import com.pushtechnology.diffusion.api.data.TopicDataFactory;
 import com.pushtechnology.diffusion.api.data.metadata.MMessage;
 import com.pushtechnology.diffusion.api.data.record.RecordTopicData;
@@ -21,6 +20,8 @@ import com.pushtechnology.diffusion.demos.tube.xml.prediction.summary.Platform;
 import com.pushtechnology.diffusion.demos.tube.xml.prediction.summary.Station;
 import com.pushtechnology.diffusion.demos.tube.xml.prediction.summary.Summary;
 import com.pushtechnology.diffusion.demos.tube.xml.prediction.summary.Train;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An instance of this class runs in the background and is responsible for
@@ -29,6 +30,7 @@ import com.pushtechnology.diffusion.demos.tube.xml.prediction.summary.Train;
 public class TubeFeed implements Runnable {
 
     private TubePublisher publisher;
+    private static final Logger LOG = LoggerFactory.getLogger(TubeFeed.class);
 
     public TubeFeed(TubePublisher publisher) {
         this.publisher = publisher;
@@ -36,7 +38,7 @@ public class TubeFeed implements Runnable {
 
     @Override
     public void run() {
-        Logs.finest("Fetching data from TFL...");
+        LOG.debug("Fetching data from TFL...");
 
         // Ideally we'd do these in parallel.
         update("C");
@@ -61,11 +63,11 @@ public class TubeFeed implements Runnable {
             summary = PredictionSummary.fetch(lineCode);
         }
         catch(APIException ex) {
-            Logs.warning("Failed to fetch prediction summary", ex);
+            LOG.warn("Failed to fetch prediction summary", ex);
             return;
         }
 
-        Logs.finest("Got data from TFL, now parsing...");
+        LOG.debug("Got data from TFL, now parsing...");
 
         // Figure out where all the trains are and how long until the next station.
         // TODO: Then update the topic data for the train status
@@ -112,7 +114,7 @@ public class TubeFeed implements Runnable {
                         if(location.getCode() == Location.Code.AT_DESTINATION ||
                             (location.getCode() == Location.Code.AT_PLATFORM &&
                             status.getDestination().equals(status.getNextStation()))) {
-                            Logs.finest("Removing train " + trainId);
+                            LOG.debug("Removing train " + trainId);
                             trainTimeMap.remove(trainId);
                             ModelHandler.INSTANCE.removeTrainStatus(trainId);
                             publisher.removeTopic(TubePublisher.LINE_TOPIC_NAME + "/" + lineCode + "/train/" + trainId);
@@ -140,7 +142,7 @@ public class TubeFeed implements Runnable {
             }
         }
 
-        Logs.finest("Data fetched and parsed");
+        LOG.debug("Data fetched and parsed");
 
         // For each train, update the topic data (or create if not present).
         MMessage trainMeta = null;
@@ -148,7 +150,7 @@ public class TubeFeed implements Runnable {
             trainMeta = TubeMetadataFactories.createTrainListMetadata();
         }
         catch(APIException ex) {
-            Logs.warning("Failed to get train metadata", ex);
+            LOG.error("Failed to get train metadata", ex);
             return;
         }
 
@@ -163,7 +165,7 @@ public class TubeFeed implements Runnable {
                 record = ModelHandler.INSTANCE.populateTrainRecord(trainMeta.getRecord("train"), status);
             }
             catch(MessageException ex) {
-                Logs.warning("Failed to create a train record", ex);
+                LOG.warn("Failed to create a train record", ex);
                 continue;
             }
             if(trainTopic == null) {
@@ -173,7 +175,7 @@ public class TubeFeed implements Runnable {
                     trainTopic = publisher.addTopic(topicName, trainData);
                 }
                 catch(APIException ex) {
-                    Logs.warning("Failed to create a new train topic", ex);
+                    LOG.warn("Failed to create a new train topic", ex);
                     continue;
                 }
             }
@@ -187,7 +189,7 @@ public class TubeFeed implements Runnable {
                     }
                 }
                 catch(APIException ex) {
-                    Logs.warning("Failed to update a train record", ex);
+                    LOG.warn("Failed to update a train record", ex);
                     trainData.abortUpdate();
                 }
                 finally {

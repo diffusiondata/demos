@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.pushtechnology.diffusion.api.APIException;
-import com.pushtechnology.diffusion.api.Logs;
 import com.pushtechnology.diffusion.api.data.TopicDataFactory;
 import com.pushtechnology.diffusion.api.data.metadata.MMessage;
 import com.pushtechnology.diffusion.api.data.metadata.MRecord;
@@ -21,11 +20,15 @@ import com.pushtechnology.diffusion.demos.tube.meta.TubeMetadataFactories;
 import com.pushtechnology.diffusion.demos.tube.model.Line;
 import com.pushtechnology.diffusion.demos.tube.model.ModelHandler;
 import com.pushtechnology.diffusion.demos.tube.model.Station;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main TubePublisher class
  */
 public class TubePublisher extends Publisher {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TubePublisher.class);
 
     public static final String ROOT_TOPIC_NAME = "tube";
     public static final String STATION_TOPIC_NAME = ROOT_TOPIC_NAME + "/station";
@@ -65,7 +68,7 @@ public class TubePublisher extends Publisher {
                 Station station = ModelHandler.INSTANCE.getStation(stationCode);
 
                 if(station == null) {
-                    Logs.warning("Unable to find station " + stationCode);
+                    LOG.warn("Unable to find station " + stationCode);
                     continue;
                 }
 
@@ -74,7 +77,7 @@ public class TubePublisher extends Publisher {
                     records.add(stationRecord);
                 }
                 else {
-                    Logs.warning("Unable to find record for line "+ lineCode + ", station " + stationCode);
+                    LOG.warn("Unable to find record for line "+ lineCode + ", station " + stationCode);
                 }
             }
 

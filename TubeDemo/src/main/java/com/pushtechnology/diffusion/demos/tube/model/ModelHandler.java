@@ -1,8 +1,6 @@
 /* COPYRIGHT (c) 2013 Push Technology Ltd. */
 package com.pushtechnology.diffusion.demos.tube.model;
 
-import com.pushtechnology.diffusion.api.Logs;
-import com.pushtechnology.diffusion.api.Utils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,11 +19,16 @@ import com.pushtechnology.diffusion.api.message.Record;
 import com.pushtechnology.diffusion.demos.tube.TubePublisher;
 import com.pushtechnology.diffusion.demos.tube.xml.routes.Routes;
 import com.pushtechnology.diffusion.demos.tube.xml.stations.Stations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URL;
 
 public enum ModelHandler {
 
     INSTANCE;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ModelHandler.class);
 
     private ConcurrentMap<String, Station> stationMap;
     private ConcurrentMap<String, Routing> routingMap;
@@ -51,11 +54,11 @@ public enum ModelHandler {
 
         JAXBContext ctx;
 
-        Logs.finest("++AST: Loading stations");
+        LOG.debug("++AST: Loading stations");
         //Logs.finest("++AST: url=" + TubePublisher.class.getClassLoader().getResource("."));
-        Logs.finest("++AST: url=" + getClass().getResourceAsStream("stations.xsd"));
-        Logs.finest("++AST: url=" + ModelHandler.class.getResourceAsStream("stations.xsd"));
-        Logs.finest("++AST: stations = " + ModelHandler.class.getResourceAsStream("stations.xsd"));
+        LOG.debug("++AST: url=" + getClass().getResourceAsStream("stations.xsd"));
+        LOG.debug("++AST: url=" + ModelHandler.class.getResourceAsStream("stations.xsd"));
+        LOG.debug("++AST: stations = " + ModelHandler.class.getResourceAsStream("stations.xsd"));
 
         ctx = JAXBContext.newInstance(Stations.class);
             SchemaFactory factory =
