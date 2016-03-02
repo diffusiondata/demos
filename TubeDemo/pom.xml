@@ -28,7 +28,7 @@ Currently depends on environment variable $DIFFUSION_HOME, amend to taste.</desc
   <properties>
     <!-- NB: Currently diffusion.jar is unavailable online, so this reference
       must be correct -->
-    <diffusion.install.dir>/home/fcoleman/diffusion/Diffusion5.6.6_01/</diffusion.install.dir>
+    <diffusion.install.dir>${DIFFUSION_HOME}</diffusion.install.dir>
   </properties>
 
   <dependencies>
