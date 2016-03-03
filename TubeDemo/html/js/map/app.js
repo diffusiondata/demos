@@ -31,8 +31,7 @@ function initMap() {
     map = new OpenLayers.Map('map', {
         controls : [
             new OpenLayers.Control.Navigation(),
-            new OpenLayers.Control.PanZoomBar(),
-            new OpenLayers.Control.LayerSwitcher()
+            new OpenLayers.Control.PanZoomBar()
         ],
         numZoomLevels : 19,
         units : 'm',
@@ -42,6 +41,9 @@ function initMap() {
             'changelayer' : onLayerChanged
         }
     });
+    var ls = new OpenLayers.Control.LayerSwitcher();
+    map.addControl(ls);
+    ls.maximizeControl();
 
     layerMap = new OpenLayers.Layer.OSM.Mapnik('Map');
     layerMap.opacity = 0.6;
