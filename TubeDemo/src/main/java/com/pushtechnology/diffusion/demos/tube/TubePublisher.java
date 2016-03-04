@@ -44,7 +44,6 @@ public class TubePublisher extends Publisher {
     @Override
     protected void initialLoad() throws APIException {
         addTopic(ROOT_TOPIC_NAME);
-
         addTopic(STATION_TOPIC_NAME + "/nearest");
 
         Topic lineRootTopic = addTopic(LINE_TOPIC_NAME, TopicDataFactory.newChildListData());
