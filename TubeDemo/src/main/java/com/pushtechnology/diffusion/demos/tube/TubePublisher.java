@@ -33,7 +33,6 @@ public class TubePublisher extends Publisher {
     public static final String ROOT_TOPIC_NAME = "tube";
     public static final String STATION_TOPIC_NAME = ROOT_TOPIC_NAME + "/station";
     public static final String LINE_TOPIC_NAME = ROOT_TOPIC_NAME + "/line";
-    public static final String TRAINS_TOPIC_NAME = LINE_TOPIC_NAME + "/trains";
 
     /**
      * initialLoad
