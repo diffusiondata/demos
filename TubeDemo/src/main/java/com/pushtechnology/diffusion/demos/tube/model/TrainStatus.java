@@ -30,7 +30,7 @@ public class TrainStatus {
         this.secondsToNextStation = secondsToNextStation;
         this.locationHistory = new LinkedList<Location>();
 
-       if(this.lastStation == this.nextStation) {
+       if (this.lastStation == this.nextStation) {
             this.secondsFromLastStation = 0;
             this.secondsToNextStation = 0;
         }
@@ -71,34 +71,34 @@ public class TrainStatus {
     public synchronized void updateLocation(final Location location) {
         Location last = null;
 
-        if(locationHistory.size() > 0) {
+        if (locationHistory.size() > 0) {
             last = locationHistory.getLast();
         }
 
-        if(last != null) {
+        if (last != null) {
             if(last.equals(location)) {
                 return; // Nothing to update
             }
         }
 
-        if(location.getFrom() != null) {
+        if (location.getFrom() != null) {
             this.lastStation = location.getFrom();
         }
-        if(location.getTo() != null) {
+        if (location.getTo() != null) {
             this.nextStation = location.getTo();
         }
 
         // Step backwards through the history to find a different "to" station
         // for this train.
-        Iterator<Location> historyIter = this.locationHistory.descendingIterator();
+        final Iterator<Location> historyIter = this.locationHistory.descendingIterator();
 
-        while(historyIter.hasNext()) {
-            Location history = historyIter.next();
-            if(history.getTo() != location.getTo()) {
+        while (historyIter.hasNext()) {
+            final Location history = historyIter.next();
+            if (history.getTo() != location.getTo()) {
                 this.secondsFromLastStation = (int)(location.getDate().getTime() - history.getDate().getTime()) / 1000;
                 
                 // We don't need any station history before this location.
-                int idx = locationHistory.indexOf(history);
+                final int idx = locationHistory.indexOf(history);
                 locationHistory.subList(0, idx).clear();
                 
                 break;
@@ -108,20 +108,20 @@ public class TrainStatus {
         // If we don't have a time for seconds from the last station (e.g. we didn't find
         // the previous station, then we default the to how long since the first location
         // in our history.
-        if(this.secondsFromLastStation == -1 && this.locationHistory.size() > 0) {
+        if (this.secondsFromLastStation == -1 && this.locationHistory.size() > 0) {
             this.secondsFromLastStation = (int)(location.getDate().getTime() - this.locationHistory.getFirst().getDate().getTime()) / 1000;
         }
 
         this.secondsToNextStation = location.getSecondsToNextStation();
 
         // A little bit of sanitisation.
-        if(this.secondsFromLastStation < -1) {
+        if (this.secondsFromLastStation < -1) {
             this.secondsFromLastStation = -1;
         }
-        if(this.secondsToNextStation < -1) {
+        if (this.secondsToNextStation < -1) {
             this.secondsToNextStation = -1;
         }
-        if(this.lastStation.equals(this.nextStation)) {
+        if (this.lastStation.equals(this.nextStation)) {
             this.secondsFromLastStation = 0;
             this.secondsToNextStation = 0;
         }
@@ -131,12 +131,12 @@ public class TrainStatus {
 
     @Override
     public boolean equals(final Object obj) {
-        if(this == obj) {
+        if (this == obj) {
             return true;
         }
-        if(this instanceof TrainStatus) {
-            TrainStatus other = (TrainStatus)obj;
-            if(this.id == other.id &&
+        if (this instanceof TrainStatus) {
+            final TrainStatus other = (TrainStatus)obj;
+            if (this.id == other.id &&
                     this.line == other.line &&
                     this.destination == other.destination &&
                     this.nextStation == other.nextStation &&

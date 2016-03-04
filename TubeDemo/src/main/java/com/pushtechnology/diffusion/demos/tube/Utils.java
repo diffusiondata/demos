@@ -27,21 +27,21 @@ public class Utils {
         Station nearestStation = null;
         double smallestDistance = Double.MAX_VALUE;
 
-        for(Station station : ModelHandler.INSTANCE.getStations()) {
-            double lat2 = station.getLat();
-            double lon2 = station.getLon();
+        for (Station station : ModelHandler.INSTANCE.getStations()) {
+            final double lat2 = station.getLat();
+            final double lon2 = station.getLon();
 
-            double dLat = Math.toRadians(lat2 - lat);
-            double dLon = Math.toRadians(lon2 - lon);
-            double latR1 = Math.toRadians(lat);
-            double latR2 = Math.toRadians(lat2);
+            final double dLat = Math.toRadians(lat2 - lat);
+            final double dLon = Math.toRadians(lon2 - lon);
+            final double latR1 = Math.toRadians(lat);
+            final double latR2 = Math.toRadians(lat2);
 
             double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(latR1) * Math.cos(latR2);
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
             double d = 6371 * c; // km
 
-            if(d < smallestDistance) {
+            if (d < smallestDistance) {
                 smallestDistance = d;
                 nearestStation = station;
             }
@@ -67,60 +67,60 @@ public class Utils {
 
         // Some destinations are "via" another station or have some other
         // extraneous information in the text.
-        for(String phrase : TRIM_PHRASES) {
-            int idx = searchName.indexOf(phrase);
-            if(idx != -1) {
+        for (String phrase : TRIM_PHRASES) {
+            final int idx = searchName.indexOf(phrase);
+            if (idx != -1) {
                 searchName = searchName.substring(0, idx);
             }
         }
 
         searchName = searchName.trim();
 
-        if(searchName.equals("King's Cross")) {
+        if ("King's Cross".equals(searchName)) {
             searchName = "King's Cross St. Pancras";
         }
 
-        if(searchName.equals("Euston Station")) {
+        if ("Euston Station".equals(searchName)) {
             searchName = "Euston";
         }
 
-        if(searchName.equals("Central Finchley")) {
+        if ("Central Finchley".equals(searchName)) {
             searchName = "Finchley Central";
         }
-        if(searchName.equals("Central") && line.equals("N")) {
+        if ("Central".equals(searchName) && "N".equals(line)) {
             searchName = "Finchley Central";
         }
 
-        if(searchName.equals("St. John Wood")) {
+        if ("St. John Wood".equals(searchName)) {
             searchName = "St. John's Wood";
         }
 
-        if(searchName.equals("Camden")) {
+        if ("Camden".equals(searchName)) {
             searchName = "Camden Town";
         }
 
-        if(searchName.equals("Brent Oak")) {
+        if ("Brent Oak".equals(searchName)) {
             searchName = "Burnt Oak";
         }
 
-        if(searchName.startsWith("Kings Cross") || searchName.startsWith("King's Cross")) {
+        if (searchName.startsWith("Kings Cross") || searchName.startsWith("King's Cross")) {
             searchName = "King's Cross St. Pancras";
         }
 
-        if(searchName.startsWith("Highbury")) {
+        if (searchName.startsWith("Highbury")) {
             searchName = "Highbury & Islington";
         }
 
-        if(searchName.equals("Turnhams Green")) {
+        if ("Turnhams Green".equals(searchName)) {
             searchName = "Turnham Green";
         }
 
-        if(searchName.equals("Edgware Road")) {
+        if ("Edgware Road".equals(searchName)) {
             searchName = "Edgware";
         }
 
-        for(Station stn : ModelHandler.INSTANCE.getStations()) {
-            if(searchName.equalsIgnoreCase(stn.getName())) {
+        for (Station stn : ModelHandler.INSTANCE.getStations()) {
+            if (searchName.equalsIgnoreCase(stn.getName())) {
                 return stn.getCode();
             }
         }

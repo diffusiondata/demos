@@ -43,7 +43,7 @@ public enum ModelHandler {
             loadRoutes();
             loadLines();
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             throw new IllegalArgumentException("Failed to initialise model", ex);
         }
     }
@@ -60,17 +60,17 @@ public enum ModelHandler {
         Helper.LOG.debug("++AST: stations = " + ModelHandler.class.getResourceAsStream("stations.xsd"));
 
         ctx = JAXBContext.newInstance(Stations.class);
-            SchemaFactory factory =
+            final SchemaFactory factory =
                 SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema =
+            final Schema schema =
                 factory.newSchema(new StreamSource(getClass().getResourceAsStream("stations.xsd")));
-            Unmarshaller unmarshaller = ctx.createUnmarshaller();
+            final Unmarshaller unmarshaller = ctx.createUnmarshaller();
             unmarshaller.setSchema(schema);
-            Stations stations =
+            final Stations stations =
                 (Stations)unmarshaller.unmarshal(getClass().getResourceAsStream("stations.xml"));
 
-        for(com.pushtechnology.diffusion.demos.tube.xml.stations.Station stn : stations.getStation()) {
-            Station model = new Station(stn.getCode(), stn.getName(), stn.getDescription(),stn.getCoords().getLat(), stn.getCoords().getLon());
+        for (com.pushtechnology.diffusion.demos.tube.xml.stations.Station stn : stations.getStation()) {
+            final Station model = new Station(stn.getCode(), stn.getName(), stn.getDescription(), stn.getCoords().getLat(), stn.getCoords().getLon());
             stationMap.put(model.getCode(), model);
         }
     }
@@ -78,20 +78,20 @@ public enum ModelHandler {
     private void loadRoutes() throws Exception {
         routingMap = new ConcurrentHashMap<String, Routing>();
 
-        JAXBContext ctx;
+        final JAXBContext ctx;
 
         ctx = JAXBContext.newInstance(Routes.class);
-        SchemaFactory factory = SchemaFactory
+        final SchemaFactory factory = SchemaFactory
                 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = factory.newSchema(new StreamSource(getClass().getResourceAsStream("routes.xsd")));
-        Unmarshaller unmarshaller = ctx.createUnmarshaller();
+        final Schema schema = factory.newSchema(new StreamSource(getClass().getResourceAsStream("routes.xsd")));
+        final Unmarshaller unmarshaller = ctx.createUnmarshaller();
         unmarshaller.setSchema(schema);
 
-        Routes routes = (Routes) unmarshaller.unmarshal(getClass().getResourceAsStream("routes.xml"));
+        final Routes routes = (Routes) unmarshaller.unmarshal(getClass().getResourceAsStream("routes.xml"));
 
-        for(com.pushtechnology.diffusion.demos.tube.xml.routes.Line line : routes.getLine()) {
-            for(com.pushtechnology.diffusion.demos.tube.xml.routes.Station stnRoute : line.getStation()) {
-                Routing routing = new Routing(line.getId() + stnRoute.getId(),  stnRoute.getPrev(), stnRoute.getNext());
+        for (com.pushtechnology.diffusion.demos.tube.xml.routes.Line line : routes.getLine()) {
+            for (com.pushtechnology.diffusion.demos.tube.xml.routes.Station stnRoute : line.getStation()) {
+                final Routing routing = new Routing(line.getId() + stnRoute.getId(),  stnRoute.getPrev(), stnRoute.getNext());
                 routingMap.put(routing.getRoutingCode(), routing);
             }
         }
@@ -100,13 +100,13 @@ public enum ModelHandler {
     private void loadLines() {
         lineMap = new ConcurrentHashMap<String, Line>();
 
-        for(String routingCode : routingMap.keySet()) {
-            String lineCode = routingCode.substring(0, 1);
-            String stationCode = routingCode.substring(1);
+        for (String routingCode : routingMap.keySet()) {
+            final String lineCode = routingCode.substring(0, 1);
+            final String stationCode = routingCode.substring(1);
 
             Line line = lineMap.get(lineCode);
 
-            if(line == null) {
+            if (line == null) {
                 line = createLineDefn(lineCode);
                 lineMap.put(lineCode, line);
             }
@@ -211,18 +211,18 @@ public enum ModelHandler {
     public Record populateStationRecord(final MRecord metadata, final Line line, final Station station) throws MessageException {
         Routing routing = null;
 
-        if(line != null && station != null) {
+        if (line != null && station != null) {
             routing = getRouting(line.getCode() + station.getCode());
         }
 
-        Record record = new Record(metadata);
+        final Record record = new Record(metadata);
 
         record.setField("code", station.getCode());
         record.setField("name", station.getName());
         record.setField("description", station.getDescription());
         record.setField("lat", station.getLat());
         record.setField("lon", station.getLon());
-        if(routing != null) {
+        if (routing != null) {
             record.setField("prev", routing.getPreviousStationsCSV());
             record.setField("next", routing.getNextStationsCSV());
         }
@@ -231,7 +231,7 @@ public enum ModelHandler {
     }
 
     public Record populateTrainRecord(final MRecord metadata, final TrainStatus train) throws MessageException {
-        Record record = new Record(metadata);
+        final Record record = new Record(metadata);
 
         record.setField("id", train.getId());
         record.setField("destination", train.getDestination());
@@ -240,7 +240,7 @@ public enum ModelHandler {
         record.setField("time_from_last", String.valueOf(train.getSecondsFromLastStation()));
         record.setField("time_to_next", String.valueOf(train.getSecondsToNextStation()));
 
-           if(train.getId() == "004_6") {
+           if ("004_6".equals(train.getId())) {
                 System.out.println(record);
             }
 

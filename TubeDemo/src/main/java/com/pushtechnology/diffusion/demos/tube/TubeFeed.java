@@ -62,7 +62,7 @@ public class TubeFeed implements Runnable {
         try {
             summary = PredictionSummary.fetch(lineCode);
         }
-        catch(APIException ex) {
+        catch (APIException ex) {
             LOG.warn("Failed to fetch prediction summary", ex);
             return;
         }
@@ -72,29 +72,29 @@ public class TubeFeed implements Runnable {
         // Figure out where all the trains are and how long until the next station.
         // TODO: Then update the topic data for the train status
 
-        Map<String, Integer> trainTimeMap = new HashMap<String, Integer>();
+        final Map<String, Integer> trainTimeMap = new HashMap<String, Integer>();
 
         // For each station/platform/train combination we receive, update
         // our internal model.
-        for(Station s : summary.getS()) {
-            for(Platform p : s.getP()) {
-                for(Train t : p.getT()) {
+        for (Station s : summary.getS()) {
+            for (Platform p : s.getP()) {
+                for (Train t : p.getT()) {
                     try {
                         // Discard special trains.
-                        if(t.getS().equals("000")
-                            || t.getDE().equals("Metropolitan Train")
-                            || t.getDE().equals("Unknown")) {
+                        if (t.getS().equals("000") ||
+                                t.getDE().equals("Metropolitan Train") ||
+                                t.getDE().equals("Unknown")) {
                             continue;
                         }
 
-                        String trainId = t.getS() + "_" + t.getT();
+                        final String trainId = t.getS() + "_" + t.getT();
 
-                        Location location = new Location(t, lineCode, s.getCode(), summary.getTime().getTimeStamp());
+                        final Location location = new Location(t, lineCode, s.getCode(), summary.getTime().getTimeStamp());
 
                         // If it's a train that we haven't seen before, add it to the map and continue.
                         TrainStatus status = ModelHandler.INSTANCE.getTrainStatus(trainId);
 
-                        if(status == null) {
+                        if (status == null) {
                             status = new TrainStatus(trainId,
                                 lineCode,
                                 Utils.stationNameToCode(lineCode, t.getDE()),
@@ -111,7 +111,7 @@ public class TubeFeed implements Runnable {
 
                         // If the train has reached its destination, then we should remove it
                         // and the associated topic.
-                        if(location.getCode() == Location.Code.AT_DESTINATION ||
+                        if (location.getCode() == Location.Code.AT_DESTINATION ||
                             (location.getCode() == Location.Code.AT_PLATFORM &&
                             status.getDestination().equals(status.getNextStation()))) {
                             LOG.debug("Removing train " + trainId);
@@ -124,16 +124,16 @@ public class TubeFeed implements Runnable {
                         // The same train may appear multiple times in the feed, and we only
                         // want to keep the one with the smallest "C=" time as others will
                         // be approaching stations further out on the line.
-                        Integer seconds = trainTimeMap.get(trainId);
+                        final Integer seconds = trainTimeMap.get(trainId);
 
-                        if(seconds == null || seconds == -1 || location.getSecondsToNextStation() < seconds) {
+                        if (seconds == null || seconds == -1 || location.getSecondsToNextStation() < seconds) {
                             trainTimeMap.put(trainId, location.getSecondsToNextStation());
 
                             // Update the location history for this train
                             status.updateLocation(location);
                         }
                     }
-                    catch(Exception ex) {
+                    catch (Exception ex) {
                         // We're not expecting anything to go wrong, but if it does
                         // we also don't want everything to stop.
                         ex.printStackTrace();
@@ -149,46 +149,46 @@ public class TubeFeed implements Runnable {
         try {
             trainMeta = TubeMetadataFactories.createTrainListMetadata();
         }
-        catch(APIException ex) {
+        catch (APIException ex) {
             LOG.error("Failed to get train metadata", ex);
             return;
         }
 
         // Update the topic tree with data from our internal model
-        for(TrainStatus status : ModelHandler.INSTANCE.getTrainStatuses()) {
-            String topicName = TubePublisher.LINE_TOPIC_NAME + "/" + status.getLine() + "/train/" + status.getId();
+        for (TrainStatus status : ModelHandler.INSTANCE.getTrainStatuses()) {
+            final String topicName = TubePublisher.LINE_TOPIC_NAME + "/" + status.getLine() + "/train/" + status.getId();
 
-            Topic trainTopic = publisher.getTopic(topicName);
+            final Topic trainTopic = publisher.getTopic(topicName);
 
             Record record = null;
             try {
                 record = ModelHandler.INSTANCE.populateTrainRecord(trainMeta.getRecord("train"), status);
             }
-            catch(MessageException ex) {
+            catch (MessageException ex) {
                 LOG.warn("Failed to create a train record", ex);
                 continue;
             }
-            if(trainTopic == null) {
+            if (trainTopic == null) {
                 try {
-                    RecordTopicData trainData = TopicDataFactory.newRecordData(trainMeta);
+                    final RecordTopicData trainData = TopicDataFactory.newRecordData(trainMeta);
                     trainData.initialise(record);
-                    trainTopic = publisher.addTopic(topicName, trainData);
+                    publisher.addTopic(topicName, trainData);
                 }
-                catch(APIException ex) {
+                catch (APIException ex) {
                     LOG.warn("Failed to create a new train topic", ex);
                     continue;
                 }
             }
             else {
-                RecordTopicData trainData = (RecordTopicData)trainTopic.getData();
+                final RecordTopicData trainData = (RecordTopicData)trainTopic.getData();
                 try {
                     trainData.startUpdate();
                     trainData.update(record);
-                    if(trainData.hasChanges()) {
+                    if (trainData.hasChanges()) {
                         trainData.publishMessage(trainData.generateDeltaMessage());
                     }
                 }
-                catch(APIException ex) {
+                catch (APIException ex) {
                     LOG.warn("Failed to update a train record", ex);
                     trainData.abortUpdate();
                 }

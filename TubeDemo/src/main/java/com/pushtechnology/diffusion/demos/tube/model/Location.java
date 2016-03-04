@@ -56,23 +56,23 @@ public class Location {
         this.to = stationCode;
         this.date = date;
         
-        String locationStr = train.getL().trim();
+        final String locationStr = train.getL().trim();
         
-        if(locationStr.startsWith("Leaving ")) {
+        if (locationStr.startsWith("Leaving ")) {
             this.code = Code.LEAVING;
             Matcher m = patternLeaving.matcher(locationStr);
             if(m.find()) {
                 this.from = Utils.stationNameToCode(lineCode, m.group(1).trim());
             }
         }
-        if(locationStr.startsWith("Left ")) {
+        if (locationStr.startsWith("Left ")) {
             this.code = Code.LEFT_STATION;
             Matcher m = patternLeft.matcher(locationStr);
             if(m.find()) {
                 this.from = Utils.stationNameToCode(lineCode, m.group(1).trim());
             }
         }
-        if(locationStr.startsWith("Between ")) {
+        if (locationStr.startsWith("Between ")) {
             this.code = Code.BETWEEN_STATIONS;
             Matcher m = patternBetween.matcher(locationStr);
             if(m.find()) {
@@ -80,17 +80,17 @@ public class Location {
                 this.to = Utils.stationNameToCode(lineCode, m.group(2).trim());
             }
         }
-        if(locationStr.startsWith("Approaching ")) {
+        if (locationStr.startsWith("Approaching ")) {
             this.code = Code.APPROACHING_STATION;
             Matcher m = patternApproaching.matcher(locationStr);
             if(m.find()) {
                 this.to = Utils.stationNameToCode(lineCode, m.group(1).trim());
             }
         }
-        if(locationStr.startsWith("At ")) {
+        if (locationStr.startsWith("At ")) {
             Matcher m = patternAt.matcher(locationStr);
-            if(m.find()) {
-                if(m.group(1).trim().equals("Platform")) {
+            if (m.find()) {
+                if (m.group(1).trim().equals("Platform")) {
                     this.code = Code.AT_PLATFORM;
                     this.from = stationCode;
                     this.to = stationCode;
@@ -103,19 +103,19 @@ public class Location {
         }
         
         try {
-            Date dd = mmss.parse(train.getC());
+            final Date dd = mmss.parse(train.getC());
             Calendar cc = Calendar.getInstance();
             cc.setTime(dd);
             this.secondsToNextStation = cc.get(Calendar.MINUTE) * 60 + cc.get(Calendar.SECOND);
             
             // Because our feed could be 30s out...
             this.secondsToNextStation -= 15;
-            if(this.secondsToNextStation < 0) {
+            if (this.secondsToNextStation < 0) {
                 this.secondsToNextStation = 0;
             }
         }
-        catch(ParseException ex) {
-            if(this.code == Code.AT_PLATFORM) {
+        catch (ParseException ex) {
+            if (this.code == Code.AT_PLATFORM) {
                 this.secondsToNextStation = 0; // Probably got a "-" indicating in the station
             }
             else {
@@ -156,17 +156,17 @@ public class Location {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) {
+        if (obj == null) {
             return false;
         }
-        if(this == obj) {
+        if (this == obj) {
             return true;
         }
         if(!(obj instanceof Location)) {
             return false;
         }
-        Location other = (Location)obj;
-        if(this.code == other.code &&
+        final Location other = (Location)obj;
+        if (this.code == other.code &&
             this.date == other.date &&
             this.line == other.line &&
             this.from == other.from &&

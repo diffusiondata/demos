@@ -34,14 +34,14 @@ public class Routing {
     }
 
     public String getPreviousStationsCSV() {
-        if(previousStationsCSV == null) {
+        if (previousStationsCSV == null) {
             previousStationsCSV = listToCSV(previousStations);
         }
         return previousStationsCSV;
     }
 
     public String getNextStationsCSV() {
-        if(nextStationsCSV == null) {
+        if (nextStationsCSV == null) {
             nextStationsCSV = listToCSV(nextStations);
         }
         return nextStationsCSV;

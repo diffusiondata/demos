@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main TubePublisher class
+ * Main TubePublisher class.
  */
 public class TubePublisher extends Publisher {
 
@@ -46,32 +46,32 @@ public class TubePublisher extends Publisher {
         addTopic(ROOT_TOPIC_NAME);
         addTopic(STATION_TOPIC_NAME + "/nearest");
 
-        Topic lineRootTopic = addTopic(LINE_TOPIC_NAME, TopicDataFactory.newChildListData());
+        final Topic lineRootTopic = addTopic(LINE_TOPIC_NAME, TopicDataFactory.newChildListData());
 
-        MMessage lineMeta = TubeMetadataFactories.createLineMetadata();
-        MMessage stationListMeta = TubeMetadataFactories.createStationListMetadata();
+        final MMessage lineMeta = TubeMetadataFactories.createLineMetadata();
+        final MMessage stationListMeta = TubeMetadataFactories.createStationListMetadata();
 
         // Add topics /tube/line/LINE_CODE              => line definition
         //            /tube/line/LINE_CODE/stations     => station list
-        for(String lineCode : ModelHandler.INSTANCE.getLineCodes()) {
+        for (String lineCode : ModelHandler.INSTANCE.getLineCodes()) {
 
-            RecordTopicData lineData = TopicDataFactory.newRecordData(lineMeta);
-            RecordTopicData stationListData = TopicDataFactory.newRecordData(stationListMeta);
+            final RecordTopicData lineData = TopicDataFactory.newRecordData(lineMeta);
+            final RecordTopicData stationListData = TopicDataFactory.newRecordData(stationListMeta);
 
-            List<Record> records = new ArrayList<Record>();
+            final List<Record> records = new ArrayList<Record>();
 
-            Line line = ModelHandler.INSTANCE.getLine(lineCode);
+            final Line line = ModelHandler.INSTANCE.getLine(lineCode);
 
-            for(String stationCode : line.getStationCodes()) {
-                Station station = ModelHandler.INSTANCE.getStation(stationCode);
+            for (String stationCode : line.getStationCodes()) {
+                final Station station = ModelHandler.INSTANCE.getStation(stationCode);
 
-                if(station == null) {
+                if (station == null) {
                     LOG.warn("Unable to find station " + stationCode);
                     continue;
                 }
 
-                Record stationRecord = ModelHandler.INSTANCE.populateStationRecord(stationListMeta.getRecord("station"), line, station);
-                if(stationRecord != null) {
+                final Record stationRecord = ModelHandler.INSTANCE.populateStationRecord(stationListMeta.getRecord("station"), line, station);
+                if (stationRecord != null) {
                     records.add(stationRecord);
                 }
                 else {
@@ -83,7 +83,7 @@ public class TubePublisher extends Publisher {
 
             lineData.initialise(ModelHandler.INSTANCE.populateLineRecord(lineMeta.getRecord("line"), line));
 
-            Topic lineTopic = addTopic(line.getCode(), lineRootTopic, lineData);
+            final Topic lineTopic = addTopic(line.getCode(), lineRootTopic, lineData);
 
             addTopic("stations", lineTopic, stationListData);
         }
@@ -102,8 +102,8 @@ public class TubePublisher extends Publisher {
     @Override
     protected void subscription(final Client client, final Topic topic, final boolean loaded)
     throws APIException {
-        if(topic.getName().matches("^" + LINE_TOPIC_NAME + "/./train/.*$")) {
-            TopicMessage load = topic.getData().getLoadMessage();
+        if (topic.getName().matches("^" + LINE_TOPIC_NAME + "/./train/.*$")) {
+            final TopicMessage load = topic.getData().getLoadMessage();
             client.send(load);
         }
     }
@@ -124,26 +124,26 @@ public class TubePublisher extends Publisher {
             final List<String> headers) throws APIException {
         TopicMessage reply = null;
 
-        if(topic.getName().equals(ROOT_TOPIC_NAME + "/station/nearest")) {
-            Station defaultStation = ModelHandler.INSTANCE.getStation("OXC");
+        if (topic.getName().equals(ROOT_TOPIC_NAME + "/station/nearest")) {
+            final Station defaultStation = ModelHandler.INSTANCE.getStation("OXC");
             double lat = defaultStation.getLat();
             double lon = defaultStation.getLon();
-            if(headers.size() > 0) {
-                String[] coords = headers.get(0).split(",");
-                if(coords.length > 0) {
+            if (headers.size() > 0) {
+                final String[] coords = headers.get(0).split(",");
+                if (coords.length > 0) {
                     lat = Double.valueOf(coords[0]);
                 }
-                if(coords.length > 1) {
+                if (coords.length > 1) {
                     lon = Double.valueOf(coords[1]);
                 }
             }
-            Station station = Utils.findNearestStation(lat, lon);
+            final Station station = Utils.findNearestStation(lat, lon);
 
-            MMessage stationListMeta = TubeMetadataFactories.createStationListMetadata();
-            MRecord stationMeta = stationListMeta.getRecord("station");
+            final MMessage stationListMeta = TubeMetadataFactories.createStationListMetadata();
+            final MRecord stationMeta = stationListMeta.getRecord("station");
 
             reply = topic.createLoadMessage();
-            Record record = ModelHandler.INSTANCE.populateStationRecord(stationMeta, null, station);
+            final Record record = ModelHandler.INSTANCE.populateStationRecord(stationMeta, null, station);
             reply.putRecords(record);
         }
 
