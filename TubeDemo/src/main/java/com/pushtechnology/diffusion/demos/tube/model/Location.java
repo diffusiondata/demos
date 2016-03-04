@@ -13,7 +13,7 @@ import com.pushtechnology.diffusion.demos.tube.xml.prediction.summary.Train;
 
 public class Location {
 
-    public static enum Code {
+    public enum Code {
         UNKNOWN,
         AT_PLATFORM,
         LEAVING,
@@ -61,21 +61,21 @@ public class Location {
         if (locationStr.startsWith("Leaving ")) {
             this.code = Code.LEAVING;
             Matcher m = patternLeaving.matcher(locationStr);
-            if(m.find()) {
+            if (m.find()) {
                 this.from = Utils.stationNameToCode(lineCode, m.group(1).trim());
             }
         }
         if (locationStr.startsWith("Left ")) {
             this.code = Code.LEFT_STATION;
             Matcher m = patternLeft.matcher(locationStr);
-            if(m.find()) {
+            if (m.find()) {
                 this.from = Utils.stationNameToCode(lineCode, m.group(1).trim());
             }
         }
         if (locationStr.startsWith("Between ")) {
             this.code = Code.BETWEEN_STATIONS;
             Matcher m = patternBetween.matcher(locationStr);
-            if(m.find()) {
+            if (m.find()) {
                 this.from = Utils.stationNameToCode(lineCode, m.group(1).trim());
                 this.to = Utils.stationNameToCode(lineCode, m.group(2).trim());
             }
@@ -83,7 +83,7 @@ public class Location {
         if (locationStr.startsWith("Approaching ")) {
             this.code = Code.APPROACHING_STATION;
             Matcher m = patternApproaching.matcher(locationStr);
-            if(m.find()) {
+            if (m.find()) {
                 this.to = Utils.stationNameToCode(lineCode, m.group(1).trim());
             }
         }
@@ -104,7 +104,7 @@ public class Location {
         
         try {
             final Date dd = mmss.parse(train.getC());
-            Calendar cc = Calendar.getInstance();
+            final Calendar cc = Calendar.getInstance();
             cc.setTime(dd);
             this.secondsToNextStation = cc.get(Calendar.MINUTE) * 60 + cc.get(Calendar.SECOND);
             
