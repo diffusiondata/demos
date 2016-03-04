@@ -84,7 +84,6 @@ public class TubePublisher extends Publisher {
             lineData.initialise(ModelHandler.INSTANCE.populateLineRecord(lineMeta.getRecord("line"), line));
 
             Topic lineTopic = addTopic(line.getCode(), lineRootTopic, lineData);
-            lineTopic.addTopic("train").setAutoSubscribe(true);
 
             addTopic("stations", lineTopic, stationListData);
         }
