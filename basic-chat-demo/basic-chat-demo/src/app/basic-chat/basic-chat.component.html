@@ -1,0 +1,6 @@
+
+  <ul>
+    <li *ngFor="let chatItem of chatlog">{{chatItem}}</li>
+  </ul>
+  <input #textInput (keyup.enter)="writeMessage( textInput.value);textInput.value=''" type="text">
+
